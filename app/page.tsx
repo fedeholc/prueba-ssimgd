@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import styles from "./page.module.css";
 import { useEffect, useState } from "react";
@@ -13,6 +14,9 @@ export default function Home() {
     setBuscar(true);
   }
 
+  useEffect(() => {
+    console.log("Home Render");
+  }, []);
   return (
     <div className={styles.page}>
       <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} />
@@ -32,7 +36,10 @@ const ImageLinkExtractor = ({ url }: { url: string }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [imageLinksSet, setImageLinksSet] = useState(new Set<string>());
+
   useEffect(() => {
+    console.log("ImageLinkExractor Render");
     const fetchImageLinks = async () => {
       setIsLoading(true);
       setImageLinks([]);
@@ -71,6 +78,12 @@ const ImageLinkExtractor = ({ url }: { url: string }) => {
                 setImageLinks((prev) =>
                   prev ? [...prev, imageData] : [imageData]
                 );
+
+                setImageLinksSet((prev) => {
+                  const newSet = new Set(prev);
+                  newSet.add(imageData.url);
+                  return newSet;
+                });
               } catch {
                 console.error("Error parsing line:", line);
               }
@@ -93,13 +106,38 @@ const ImageLinkExtractor = ({ url }: { url: string }) => {
   return (
     <div>
       <h2>Enlaces de imágenes {isLoading ? "Cargando..." : ""}</h2>
-      {imageLinks?.map((image: any, index: number) => (
+      {/* {imageLinks?.map((image: any, index: number) => (
         <div key={image.url + index}>
           <a href={image.url} target="_blank" rel="noopener noreferrer">
             {image.url}
           </a>
+          <img
+            style={{ maxHeight: "200px" }}
+            src={image.url}
+            alt={`Imagen ${index}`}
+          />
         </div>
-      ))}
+      ))} */}
+      <div
+        style={{ display: "flex", flexDirection: "row", flexWrap: "wrap" }}
+        className="img-container"
+      >
+        {Array.from(imageLinksSet).map((url, index) => (
+          <div
+            style={{ width: "150px", overflow: "hidden", padding: "1rem" }}
+            key={url + index}
+          >
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              {url}
+            </a>
+            <img
+              style={{ maxHeight: "100px", maxWidth: "100px" }}
+              src={url}
+              alt={`Imagen ${index}`}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

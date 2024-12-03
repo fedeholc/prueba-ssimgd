@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
 
 
-export async function POST(req: Request ) {
+export async function POST(req: Request) {
 
   /* const response = await fetch("https://www.google.com");
   const html = await response.text(); */
@@ -14,7 +14,7 @@ export async function POST(req: Request ) {
     return Response.json({ message: "No se envió la url" });
   }
   const url = body.url;
-   
+
   const stream = new ReadableStream({
     async start(controller) {
       try {
@@ -32,10 +32,7 @@ export async function POST(req: Request ) {
           const absoluteImageUrl = new URL(imageUrl, url).href;
           console.log("mando: ", absoluteImageUrl);
 
-          //delay 1s
-          setTimeout(() => {
 
-          }, 1000);
 
           controller.enqueue(
             JSON.stringify({
@@ -45,7 +42,7 @@ export async function POST(req: Request ) {
           );
 
           //generate a 1s delay
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 10));
 
         }
 

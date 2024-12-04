@@ -6,12 +6,41 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [buscar, setBuscar] = useState<boolean>(false);
-  async function prueba() {
-    /*     console.log("Hola");
-    const response = await fetch("/api/datos-stream");
-    const data = await response.json();
-    console.log(data); */
+  const [subPages, setSubPages] = useState<string[] | null>(null);
+
+  async function handleGetSubPages() {
     setBuscar(true);
+    const response = await fetch("/api/get-subpages", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ url: "https://" + sourceUrl }),
+    });
+    const { subPages } = await response.json();
+    setSubPages(subPages);
+    console.log("subpages:", subPages);
+  }
+
+  async function handleGetImages(e: React.MouseEvent<HTMLButtonElement>) {
+    /*     const response = await fetch("/api/get-images", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ url: "https://" + sourceUrl }),
+    });
+    const data = await response.json(); */
+    console.log("data:", e, (e.target as HTMLButtonElement).name);
+    const response = await fetch("/api/get-images", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ url: (e.target as HTMLButtonElement).name }),
+    });
+    const data = await response.json();
+    console.log("images:", data);
   }
 
   useEffect(() => {
@@ -19,14 +48,31 @@ export default function Home() {
   }, []);
   return (
     <div className={styles.page}>
-      <input type="text" value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} />
-      <button onClick={prueba}>Enviar {sourceUrl}</button>
+      <input
+        type="text"
+        value={sourceUrl}
+        onChange={(e) => setSourceUrl(e.target.value)}
+      />
+      <button onClick={handleGetSubPages}>Enviar </button>
 
+      <div>subpages:</div>
+      {subPages && (
+        <div>
+          {subPages.map((subPage, index) => (
+            <div key={subPage + index}>
+              <div>{subPage}</div>
+              <button name={subPage} onClick={(e) => handleGetImages(e)}>
+                get images
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       {buscar && (
         <div>
           {/*           <ImageLinkExtractor url={url}></ImageLinkExtractor>
            */}
-          <ImagesGrid url={sourceUrl}></ImagesGrid>
+          {/* <ImagesGrid url={sourceUrl}></ImagesGrid> */}
         </div>
       )}
     </div>
@@ -34,7 +80,6 @@ export default function Home() {
 }
 
 function ImagesGrid({ url }: { url: string }) {
-
   useEffect(() => {
     async function getData() {
       const response = await fetch("/api/datos", {
@@ -46,17 +91,11 @@ function ImagesGrid({ url }: { url: string }) {
       });
       const data = await response.json();
       console.log("data:", data);
-
- 
     }
     getData();
   }, [url]);
   return <div>holi {url}</div>;
 }
-
-
-
-
 
 const ImageLinkExtractor = ({ url }: { url: string }) => {
   const [imageLinks, setImageLinks] = useState<string[] | null>([]);

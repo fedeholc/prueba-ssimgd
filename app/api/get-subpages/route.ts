@@ -12,9 +12,13 @@ async function getSubPages(pageUrl: string): Promise<Set<string> | undefined> {
     const links = document.querySelectorAll("a");
     console.log("Subpaginas:", links)
     links.forEach((link) => {
-      const href = link.getAttribute("href");
+      let href = link.getAttribute("href");
       //TODO: qué pasa si no existe subPageMustInclude?? y si lo quiero hacer un array para checkiar varias cosas?
       if (href) {
+        if (href && !href.startsWith("http")) {
+          const url = new URL(pageUrl);
+          href = url.origin + href;
+        }
         subPages.add(href);
         console.log("Agregada:", href);
       }

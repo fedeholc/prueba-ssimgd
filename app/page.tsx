@@ -3,10 +3,15 @@
 import styles from "./page.module.css";
 import { useEffect, useState } from "react";
 
+type ImageLinks = {
+  [key: string]: string[];
+};
+
 export default function Home() {
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [buscar, setBuscar] = useState<boolean>(false);
   const [subPages, setSubPages] = useState<string[] | null>(null);
+  const [imageLinks, setImageLinks] = useState<ImageLinks | null>(null);
 
   async function handleGetSubPages() {
     setBuscar(true);
@@ -32,6 +37,7 @@ export default function Home() {
     });
     const data = await response.json(); */
     console.log("data:", e, (e.target as HTMLButtonElement).name);
+    const url = (e.target as HTMLButtonElement).name;
     const response = await fetch("/api/get-images", {
       headers: {
         "Content-Type": "application/json",
@@ -39,7 +45,8 @@ export default function Home() {
       method: "POST",
       body: JSON.stringify({ url: (e.target as HTMLButtonElement).name }),
     });
-    const data = await response.json();
+    const data: ImageLinks = await response.json();
+    setImageLinks((prev) => ({ ...prev, [url]: data.imageLinks }));
     console.log("images:", data);
   }
 
@@ -64,6 +71,22 @@ export default function Home() {
               <button name={subPage} onClick={(e) => handleGetImages(e)}>
                 get images
               </button>
+              {imageLinks && imageLinks[subPage] && (
+                <div className="img-grid">
+                  {imageLinks[subPage]?.map((image: string, index: number) => (
+                    <div key={image}>
+                      <a href={image} target="_blank" rel="noopener noreferrer">
+                        {image}
+                      </a>
+                      <img
+                        style={{ maxHeight: "200px" }}
+                        src={image}
+                        alt={`Imagen ${index}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>

@@ -4,7 +4,7 @@ import styles from "./page.module.css";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [url, setUrl] = useState<string>("");
+  const [sourceUrl, setSourceUrl] = useState<string>("");
   const [buscar, setBuscar] = useState<boolean>(false);
   async function prueba() {
     /*     console.log("Hola");
@@ -19,17 +19,44 @@ export default function Home() {
   }, []);
   return (
     <div className={styles.page}>
-      <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} />
-      <button onClick={prueba}>Enviar {url}</button>
+      <input type="text" value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} />
+      <button onClick={prueba}>Enviar {sourceUrl}</button>
 
       {buscar && (
         <div>
-          <ImageLinkExtractor url={url}></ImageLinkExtractor>
+          {/*           <ImageLinkExtractor url={url}></ImageLinkExtractor>
+           */}
+          <ImagesGrid url={sourceUrl}></ImagesGrid>
         </div>
       )}
     </div>
   );
 }
+
+function ImagesGrid({ url }: { url: string }) {
+
+  useEffect(() => {
+    async function getData() {
+      const response = await fetch("/api/datos", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({ url: url }),
+      });
+      const data = await response.json();
+      console.log("data:", data);
+
+ 
+    }
+    getData();
+  }, [url]);
+  return <div>holi {url}</div>;
+}
+
+
+
+
 
 const ImageLinkExtractor = ({ url }: { url: string }) => {
   const [imageLinks, setImageLinks] = useState<string[] | null>([]);

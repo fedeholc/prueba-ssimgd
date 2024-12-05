@@ -29,7 +29,6 @@ export async function GET() {
   await client.connect();
   // Send a ping to confirm a successful connection
   const database = client.db("ssaver");
-  console.log("Database:", database);
   const coll = database.collection("series");
   const cursor = coll.find();
 

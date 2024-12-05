@@ -1,6 +1,5 @@
 
 import { MongoClient, ServerApiVersion } from "mongodb";
-import { NextRequest } from "next/server";
 
 const uri = process.env.MONGODB_URI || "ERROR: No URI provided";
 

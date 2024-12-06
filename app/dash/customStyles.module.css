@@ -1,6 +1,6 @@
 .header {
   font-size: 2rem;
-  color: green;
+  color: rgb(9, 22, 9);
 }
 
 .list {
@@ -13,7 +13,7 @@
 }
 
 .selected {
-  background-color: darkgreen;
+  background-color: rgb(2, 19, 2);
   color: yellow;
   border: 2px solid gold;
 }

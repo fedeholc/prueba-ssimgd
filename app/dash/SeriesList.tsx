@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import SelectableList from "./SelectableList";
+import customStyles from "./customStyles.module.css";
 
 type Series = {
   name: string;
   url: string;
-}
+};
 
 export default function SeriesList() {
   const [data, setData] = useState<Series[]>([]);
@@ -27,16 +28,11 @@ export default function SeriesList() {
 
   return (
     <div>
-      <div>
-        {data.map((e: Series, i: number) => (
-          <p key={`${e.name}${i}`} data-prueba={e.name} id={e.name}>
-            {e.name}
-          </p>
-        ))}
-      </div>
+      
       <SelectableList
         items={data.map((e: Series) => e.name)}
         onSelectionChange={handleSelectionChange}
+        styles={customStyles}
       />
     </div>
   );

@@ -1,21 +1,18 @@
-import styles from "./SelectableList.module.css";
+import defaultStyles from "./SelectableList.module.css";
 
 import React, { useState, useEffect } from "react";
 
 interface SelectableListProps {
   items: string[];
   onSelectionChange?: (selectedItems: string[]) => void;
+  styles?: { [key: string]: string }; // Objeto para los estilos
 }
 
-const SelectableList: React.FC<SelectableListProps> = ({
-  items,
-  onSelectionChange,
-}) => {
+function SelectableList({ items, onSelectionChange, styles = defaultStyles }: SelectableListProps) {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
-  // Efecto para notificar cambios en la selección
+   
   useEffect(() => {
-    // Llamamos al callback con los elementos seleccionados
     if (onSelectionChange) {
       onSelectionChange(selectedItems);
     }
@@ -32,12 +29,12 @@ const SelectableList: React.FC<SelectableListProps> = ({
   return (
     <div>
       <h2>Lista Seleccionable</h2>
-      <ul>
+      <div>
         {items.map((item, index) => (
-          <li
+          <div
             key={index}
             onClick={() => toggleItemSelection(item)}
-            className={`${
+            className={`${styles.item} ${
               selectedItems.includes(item)
                 ? styles.selected
                 : styles.notSelected
@@ -45,15 +42,15 @@ const SelectableList: React.FC<SelectableListProps> = ({
             `}
           >
             {item}
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
       <div>
         <h3>Elementos Seleccionados:</h3>
         <p>{selectedItems.join(", ")}</p>
       </div>
     </div>
   );
-};
+}
 
 export default SelectableList;

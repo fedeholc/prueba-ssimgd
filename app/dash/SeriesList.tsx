@@ -1,6 +1,7 @@
 "use client";
  import SelectableList from "./SelectableList";
 import customStyles from "./customStyles.module.css";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import useFetchSeries from "./useFetchSeries";
 import useFetch from "./useFetch";
 

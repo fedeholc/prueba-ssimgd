@@ -7,7 +7,10 @@ interface SelectableListProps {
   onSelectionChange?: (selectedItems: string[]) => void;
 }
 
-const SelectableList: React.FC<SelectableListProps> = ({ items, onSelectionChange }) => {
+const SelectableList: React.FC<SelectableListProps> = ({
+  items,
+  onSelectionChange,
+}) => {
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
 
   // Efecto para notificar cambios en la selección
@@ -27,31 +30,26 @@ const SelectableList: React.FC<SelectableListProps> = ({ items, onSelectionChang
   };
 
   return (
-    <div className="p-4 bg-gray-100 rounded-lg">
-      <h2 className="text-xl font-bold mb-4">Lista Seleccionable</h2>
-      <ul className="space-y-2">
+    <div>
+      <h2>Lista Seleccionable</h2>
+      <ul>
         {items.map((item, index) => (
           <li
             key={index}
             onClick={() => toggleItemSelection(item)}
-            className={`
-              p-2 
-              rounded 
-              cursor-pointer 
-              transition-colors 
-              duration-200
-              ${
-                selectedItems.includes(item)
-                  ? styles.selected : styles.notSelected 
-              }
+            className={`${
+              selectedItems.includes(item)
+                ? styles.selected
+                : styles.notSelected
+            }
             `}
           >
             {item}
           </li>
         ))}
       </ul>
-      <div className="mt-4">
-        <h3 className="font-semibold">Elementos Seleccionados:</h3>
+      <div>
+        <h3>Elementos Seleccionados:</h3>
         <p>{selectedItems.join(", ")}</p>
       </div>
     </div>

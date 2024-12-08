@@ -33,13 +33,13 @@ export async function GET() {
   const cursor = coll.find();
 
 
-  const a = await cursor.toArray();
+  const rta = await cursor.toArray();
   /*  // Print returned documents
    for await (const doc of cursor) {
      console.dir(doc);
    } */
   console.log("cursor array:", await cursor.toArray());
   await client.close();
-  return Response.json(a);
+  return Response.json(rta);
 
 }

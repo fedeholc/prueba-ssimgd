@@ -5,40 +5,51 @@ type Series = {
   url: string;
 };
 
-export default function useFetchSeries(apiUrl: string, name: string) {
-  const [data, setData] = useState<Series | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export default function useFetchOneSeries(selectedItem: string|null) {
+  const [selectedData, setSelectedData] = useState<Series | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchData() {
+    // Reset state cuando no hay item seleccionado
+    if (!selectedItem) {
+      setSelectedData(null);
+      setError(null);
+      return;
+    }
+
+    async function fetchSelectedData() {
+      setIsLoading(true);
+      setError(null);
+
       try {
-        setIsLoading(true);
         const response = await fetch(
-          apiUrl,
+          "http://localhost:3002/api/mongo/get-one-series",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name: name }),
+            body: JSON.stringify({ name: selectedItem }),
           }
         );
+
         if (!response.ok) {
-          console.error("Error al obtener los datos");
-          return;
+          throw new Error("Error al obtener los datos");
         }
 
         const responseData = await response.json();
-        setData(responseData);
+        setSelectedData(responseData);
       } catch (err) {
-        setError((err as Error).message);
+        setError(err instanceof Error ? err.message : "An unknown error occurred");
+        setSelectedData(null);
       } finally {
         setIsLoading(false);
       }
     }
-    fetchData();
-  }, [apiUrl, name]);
 
-  return { data, isLoading, error };
+    fetchSelectedData();
+  }, [selectedItem]);
+
+  return { selectedData, isLoading, error };
 }

@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const result = await coll.findOne({ name: name });
 
   console.log("result get one:", result);
-  //await client.close();
+  await client.close(); //VER ojo, si se cierra la conexión y la tiene que volver a abrir en cada request, se hace más lenta la respuesta
   return Response.json(result, { status: 200 });
 
 }

@@ -1,13 +1,12 @@
 "use client";
 import styles from "./page.module.css";
-import SeriesList from "./SeriesList";
 import SelectableList from "./SelectableList";
 import customStyles from "./customStyles.module.css";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import useFetchSeries from "./useFetchSeries";
 import useFetch from "./useFetch";
 import useFetchOneSeries from "./useFetchOneSeries";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 type Series = {
   name: string;
@@ -23,38 +22,12 @@ export default function Dash() {
   );
 
   const [selecteditems, setSelectedItems] = useState<string[]>([]);
-  const [selectedData, setSelectedData] = useState<Series | null>(null);
+  const {
+    selectedData,
+    isLoading: isLoadingSelectedData,
+    error: selectedDataError,
+  } = useFetchOneSeries(selecteditems.length > 0 ? selecteditems[0] : null);
 
-  async function getSelectedData(selectedItem: string) {
-    const response = await fetch(
-      "http://localhost:3002/api/mongo/get-one-series",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: selectedItem }),
-      }
-    );
-    if (!response.ok) {
-      console.error("Error al obtener los datos");
-      return;
-    }
-
-    const responseData = await response.json();
-
-    return responseData;
-  }
-
-  useEffect(() => {
-    if (selecteditems.length === 0) {
-      return;
-    }
-    const itemData = getSelectedData(selecteditems[0]);
-    itemData.then((data) => {
-      setSelectedData(data);
-    });
-  }, [selecteditems]);
 
   async function handleSelectionChange(selectedItems: string[]) {
     if (selectedItems.length === 0) {
@@ -87,7 +60,10 @@ export default function Dash() {
           )}
         </div>
         <div>
-          <h2>Data</h2>
+          <h2>Selected item</h2>
+
+          {isLoadingSelectedData && <div>Cargando datos seleccionados...</div>}
+          {selectedDataError && <div>Error: {selectedDataError}</div>}
           {selectedData && <SelectedItem selectedItem={selectedData} />}
         </div>
       </div>
@@ -95,12 +71,11 @@ export default function Dash() {
   );
 }
 
-//todo: en realidad deberia separar carga de datos de la vista, hacer la carga en un useeffect del padre y pasar los datos a los hijos
+
+
 function SelectedItem({ selectedItem }: { selectedItem: Series }) {
   return (
     <div>
-      <h2>Selected item</h2>
-
       {selectedItem && (
         <div>
           <div>Name: {selectedItem.name}</div>

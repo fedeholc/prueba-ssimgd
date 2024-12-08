@@ -56,19 +56,23 @@ export default function Dash() {
         </div>
         <div>
           <h2>Data</h2>
-         <SelectedItem selectedItem={selecteditems[0]} /> 
+          <SelectedItem selectedItem={selecteditems[0]} />
         </div>
       </div>
     </div>
   );
 }
 
+//todo: en realidad deberia separar carga de datos de la vista, hacer la carga en un useeffect del padre y pasar los datos a los hijos
 function SelectedItem({ selectedItem }: { selectedItem: string }) {
   const {
     data: seriesData,
     isLoading,
     error,
-  } = useFetchOneSeries("http://localhost:3002/api/mongo/get-one-series", selectedItem);
+  } = useFetchOneSeries(
+    "http://localhost:3002/api/mongo/get-one-series",
+    selectedItem
+  );
 
   return (
     <div>

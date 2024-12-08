@@ -15,7 +15,7 @@ export default function SeriesList() {
     "http://localhost:3000/api/mongo"
   ); */
   const { data, isLoading, error } = useFetch<Series[]>(
-    "http://localhost:3000/api/mongo"
+    "http://localhost:3002/api/mongo"
   );
 
   function handleSelectionChange(selectedItems: string[]) {
@@ -32,6 +32,7 @@ export default function SeriesList() {
           items={data.map((e: Series) => e.name)}
           onSelectionChange={handleSelectionChange}
           styles={customStyles}
+          mode="single"
         />
       )}
     </div>

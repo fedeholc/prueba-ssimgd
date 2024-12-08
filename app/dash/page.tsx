@@ -7,7 +7,7 @@ import customStyles from "./customStyles.module.css";
 import useFetchSeries from "./useFetchSeries";
 import useFetch from "./useFetch";
 import useFetchOneSeries from "./useFetchOneSeries";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 type Series = {
   name: string;
@@ -23,6 +23,38 @@ export default function Dash() {
   );
 
   const [selecteditems, setSelectedItems] = useState<string[]>([]);
+  const [selectedData, setSelectedData] = useState<Series | null>(null);
+
+  async function getSelectedData(selectedItem: string) {
+    const response = await fetch(
+      "http://localhost:3002/api/mongo/get-one-series",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: selectedItem }),
+      }
+    );
+    if (!response.ok) {
+      console.error("Error al obtener los datos");
+      return;
+    }
+
+    const responseData = await response.json();
+
+    return responseData;
+  }
+
+  useEffect(() => {
+    if (selecteditems.length === 0) {
+      return;
+    }
+    const itemData = getSelectedData(selecteditems[0]);
+    itemData.then((data) => {
+      setSelectedData(data);
+    });
+  }, [selecteditems]);
 
   async function handleSelectionChange(selectedItems: string[]) {
     if (selectedItems.length === 0) {
@@ -56,7 +88,7 @@ export default function Dash() {
         </div>
         <div>
           <h2>Data</h2>
-          <SelectedItem selectedItem={selecteditems[0]} />
+          {selectedData && <SelectedItem selectedItem={selectedData} />}
         </div>
       </div>
     </div>
@@ -64,26 +96,15 @@ export default function Dash() {
 }
 
 //todo: en realidad deberia separar carga de datos de la vista, hacer la carga en un useeffect del padre y pasar los datos a los hijos
-function SelectedItem({ selectedItem }: { selectedItem: string }) {
-  const {
-    data: seriesData,
-    isLoading,
-    error,
-  } = useFetchOneSeries(
-    "http://localhost:3002/api/mongo/get-one-series",
-    selectedItem
-  );
-
+function SelectedItem({ selectedItem }: { selectedItem: Series }) {
   return (
     <div>
       <h2>Selected item</h2>
 
-      {isLoading && <div>Cargando...</div>}
-      {error && <div>Error al cargar los datos: {error}</div>}
-      {seriesData && (
+      {selectedItem && (
         <div>
-          <div>Name: {seriesData.name}</div>
-          <div>URL: {seriesData.url}</div>
+          <div>Name: {selectedItem.name}</div>
+          <div>URL: {selectedItem.url}</div>
         </div>
       )}
     </div>

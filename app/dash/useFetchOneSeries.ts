@@ -24,7 +24,7 @@ export default function useFetchOneSeries(selectedItem: string|null) {
 
       try {
         const response = await fetch(
-          "http://localhost:3002/api/mongo/get-one-series",
+          "http://localhost:3000/api/mongo/get-one-series",
           {
             method: "POST",
             headers: {

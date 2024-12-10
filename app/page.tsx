@@ -58,13 +58,19 @@ export default function Home() {
   }
   return (
     <div className={styles.page}>
+      <label>Web</label>
       <input
         type="text"
         value={sourceUrl}
         onChange={(e) => setSourceUrl(e.target.value)}
       />
       <button onClick={handleGetSubPages}>Enviar </button>
-      <input type="text" value={SPFilterInclude} onChange={(e) => setSPFilterInclude(e.target.value)} />
+      <label>Sub Pages Filter</label>
+      <input
+        type="text"
+        value={SPFilterInclude}
+        onChange={(e) => setSPFilterInclude(e.target.value)}
+      />
 
       <div>subpages:</div>
       {subPages && (

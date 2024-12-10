@@ -18,7 +18,7 @@ export default function Dash() {
     "http://localhost:3000/api/mongo"
   ); */
   const { data, isLoading, error } = useFetch<Series[]>(
-    "http://localhost:3002/api/mongo"
+    "http://localhost:3002/api/mongo/get-all-series"
   );
 
   const [selecteditems, setSelectedItems] = useState<string[]>([]);

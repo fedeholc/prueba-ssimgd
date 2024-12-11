@@ -80,12 +80,7 @@ export async function POST(request: Request) {
 
   let imageLinks: string[] | undefined = [];
 
-
   imageLinks = await getImagesUrls(url);
 
-
-
-
-
-  return Response.json({ imageLinks: imageLinks });
+  return Response.json(imageLinks);
 }

@@ -82,5 +82,5 @@ export async function POST(request: Request) {
 
   imageLinks = await getImagesUrls(url);
 
-  return Response.json(imageLinks);
+  return Response.json(imageLinks || null);
 }

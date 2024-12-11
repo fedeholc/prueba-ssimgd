@@ -4,30 +4,34 @@
 import styles from "./page.module.css";
 import { useState } from "react";
 
-type Image = {
-  imageUrl: string;
-  include: boolean;
-};
-
 type Page = {
-  [key: string]: {
-    imageUrl: string;
-    include: boolean;
-  }[];
+  url: string;
+  images: string[];
+};
+type Source = {
+  name: string;
+  url: string;
+  pages: Page[];
 };
 
-export default function Scrapper() {
+export default function Scrapper2() {
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [SPFilterInclude, setSPFilterInclude] = useState<string>("");
-  const [page, setPage] = useState<Page>({});
+  const [source, setSource] = useState<Source>({
+    name: "",
+    url: "",
+    pages: [],
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
+  console.log("source init", source);
+
   async function handleGetSubPages() {
+    console.log("----- llamo a handleGetSubPages");
     setIsLoading(true);
     setLoadingMessage("Cargando subpáginas...");
-    setPage({}); // Reset page state
-
+    setSource({ name: "nombre para" + sourceUrl, url: sourceUrl, pages: [] }); // Reset page state
     try {
       const response = await fetch("/api/get-subpages", {
         headers: {
@@ -37,7 +41,9 @@ export default function Scrapper() {
         body: JSON.stringify({ url: "https://" + sourceUrl }),
       });
       const { subPages } = await response.json();
-
+      /* 
+      subPages.push("https://" + sourceUrl);
+      console.log("subPages", subPages); */
       let count = 0;
       // Process subpages sequentially with incremental updates
       for (const subPage of subPages) {
@@ -57,21 +63,23 @@ export default function Scrapper() {
           const imgUrls: string[] = await response.json();
           console.log("imgUrls", imgUrls);
           // Update state incrementally for each subpage
-          setPage((prevPage) => ({
-            ...prevPage,
-            [subPage]:
-              imgUrls?.map((image) => ({
-                imageUrl: image,
-                include: false,
-              })) || [],
-          }));
+          setSource((prevPage) => {
+            console.log("add:", subPage);
+            const temp = { ...prevPage };
+            if (temp.pages[temp.pages.length - 1]?.url === subPage) {
+              return prevPage;
+            }
+            temp.pages.push({ url: subPage, images: imgUrls });
+            return temp;
+          });
         } catch (error) {
           console.error(`Error fetching images for ${subPage}:`, error);
           // Optionally update state to show error for this subpage
-          setPage((prevPage) => ({
-            ...prevPage,
-            [subPage]: [],
-          }));
+          setSource((prevPage) => {
+            const temp = { ...prevPage };
+            temp.pages.push({ url: subPage, images: [] });
+            return temp;
+          });
         }
       }
     } catch (error) {
@@ -102,26 +110,25 @@ export default function Scrapper() {
 
       {isLoading && <div>{loadingMessage}</div>}
 
-      {Object.keys(page).length > 0 && (
+      {source.pages.length > 0 && (
         <div>
-          {Object.keys(page).map((subPage) => (
-            <div key={subPage}>
-              <div>{subPage}</div>
+          {source.pages.map((page, index) => (
+            <div key={`${page.url}${index}`}>
+              <div>
+                {page.url}
+                {index}
+              </div>
 
               <div className="img-grid">
-                {page[subPage].length === 0 && <div>No hay imágenes</div>}
-                {page[subPage]?.map((image: Image, index: number) => (
-                  <div key={image.imageUrl}>
-                    <a
-                      href={image.imageUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {image.imageUrl}
+                {page.images?.length === 0 && <div>No hay imágenes</div>}
+                {page.images?.map((image: string, index: number) => (
+                  <div key={image}>
+                    <a href={image} target="_blank" rel="noopener noreferrer">
+                      {image}
                     </a>
                     <img
                       style={{ maxHeight: "200px" }}
-                      src={image.imageUrl}
+                      src={image}
                       alt={`Imagen ${index}`}
                     />
                   </div>

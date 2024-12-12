@@ -38,5 +38,5 @@ export async function POST(request: Request) {
 
 
 
-  return Response.json({ subPages: Array.from(subPages!) });
+  return Response.json(Array.from(subPages!));
 }

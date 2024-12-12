@@ -2,7 +2,7 @@
 //VER en este componente va mostrando a medida que descarga
 "use client";
 import styles from "./page.module.css";
-import { useState } from "react";
+import { useState, useReducer } from "react";
 
 type Page = {
   url: string;
@@ -17,36 +17,40 @@ type Source = {
 export default function Scrapper2() {
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [SPFilterInclude, setSPFilterInclude] = useState<string>("");
-  const [source, setSource] = useState<Source>({
-    name: "",
-    url: "",
-    pages: [],
-  });
+ 
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
-  console.log("source init", source);
+ 
+  const [sourceReducer, dispatch] = useReducer((state: Source, action: { type: string; payload: Page; }) => {
+    switch (action.type) {
+      case "add":
+        return { ...state, pages: [...state.pages, action.payload] };
+      default:
+        return state;
+    }
+  }
+  , { name: "", url: "", pages: [] });
+
 
   async function handleGetSubPages() {
     console.log("----- llamo a handleGetSubPages");
     setIsLoading(true);
     setLoadingMessage("Cargando subpáginas...");
-    setSource({ name: "nombre para" + sourceUrl, url: sourceUrl, pages: [] }); // Reset page state
+ 
     try {
+      const sanitizedUrl = sourceUrl.startsWith("http://") || sourceUrl.startsWith("https://") ? sourceUrl : "https://" + sourceUrl;
       const response = await fetch("/api/get-subpages", {
         headers: {
           "Content-Type": "application/json",
         },
         method: "POST",
-        body: JSON.stringify({ url: "https://" + sourceUrl }),
+        body: JSON.stringify({ url: sanitizedUrl }),
       });
       const { subPages } = await response.json();
-      /* 
-      subPages.push("https://" + sourceUrl);
-      console.log("subPages", subPages); */
+ 
       let count = 0;
-      // Process subpages sequentially with incremental updates
-      for (const subPage of subPages) {
+       for (const subPage of subPages) {
         try {
           count++;
           setLoadingMessage(
@@ -62,24 +66,11 @@ export default function Scrapper2() {
           });
           const imgUrls: string[] = await response.json();
           console.log("imgUrls", imgUrls);
-          // Update state incrementally for each subpage
-          setSource((prevPage) => {
-            console.log("add:", subPage);
-            const temp = { ...prevPage };
-            if (temp.pages[temp.pages.length - 1]?.url === subPage) {
-              return prevPage;
-            }
-            temp.pages.push({ url: subPage, images: imgUrls });
-            return temp;
-          });
+          dispatch({ type: "add", payload: { url: subPage, images: imgUrls } });
+
         } catch (error) {
           console.error(`Error fetching images for ${subPage}:`, error);
-          // Optionally update state to show error for this subpage
-          setSource((prevPage) => {
-            const temp = { ...prevPage };
-            temp.pages.push({ url: subPage, images: [] });
-            return temp;
-          });
+          dispatch({ type: "add", payload: { url: subPage, images: [] } });
         }
       }
     } catch (error) {
@@ -110,36 +101,45 @@ export default function Scrapper2() {
 
       {isLoading && <div>{loadingMessage}</div>}
 
-      {source.pages.length > 0 && (
+      {sourceReducer.pages.length > 0 && (
         <div>
-          {source.pages.map((page, index) => (
-            <div key={`${page.url}${index}`}>
-              <div>
-                {page.url}
-                {index}
-              </div>
-
-              <div className="img-grid">
-                {page.images?.length === 0 && <div>No hay imágenes</div>}
-                {page.images?.map((image: string, index: number) => (
-                  <div key={image}>
-                    <a href={image} target="_blank" rel="noopener noreferrer">
-                      {image}
-                    </a>
-                    <img
-                      style={{ maxHeight: "200px" }}
-                      src={image}
-                      alt={`Imagen ${index}`}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
+          <PagesDisplay pages={sourceReducer.pages} />
         </div>
       )}
 
       <div>------------------------------------------</div>
+    </div>
+  );
+}
+
+function PagesDisplay({ pages }: { pages: Page[] }) {
+  console.log("Init PagesDisplay", pages);
+  return (
+    <div>
+      {pages.map((page, index) => (
+        <div key={`${page.url}${index}`}>
+          <div>
+            {page.url}
+            {index}
+          </div>
+
+          <div className="img-grid">
+            {page.images?.length === 0 && <div>No hay imágenes</div>}
+            {page.images?.map((image: string, index: number) => (
+              <div key={image}>
+                <a href={image} target="_blank" rel="noopener noreferrer">
+                  {image}
+                </a>
+                <img
+                  style={{ maxHeight: "200px" }}
+                  src={image}
+                  alt={`Imagen ${index}`}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

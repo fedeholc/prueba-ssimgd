@@ -1,30 +1,24 @@
 import defaultStyles from "./SelectableList.module.css";
 
-import React, { useState, useEffect } from "react";
-
 interface SelectableListProps {
   items: string[];
-  onSelectionChange?: (selectedItems: string) => void;
+  onSelectionChange: (selectedItems: string) => void;
   styles?: { [key: string]: string }; // Objeto para los estilos
-  mode?: "single" | "multiple"; // Modo de selección
   selectedItem: string | null; // Elemento seleccionado
-  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function SelectableList({
   items,
   onSelectionChange,
   styles = defaultStyles,
-  mode = "single",
   selectedItem,
-  setSelectedItem
 }: SelectableListProps) {
  
   function toggleItemSelection(item: string) {
-    if (mode === "single") {
-      setSelectedItem(item);
+       onSelectionChange(item)
+      //setSelectedItem(item);
       return;
-    }
+   
   }
 
   return (

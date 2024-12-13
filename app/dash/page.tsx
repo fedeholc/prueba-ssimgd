@@ -5,7 +5,6 @@ import SelectableList from "./SelectableList";
 import useFetchSeries from "./useFetchSeries";
 import useFetchOneSeries from "./useFetchOneSeries";
 import React, { useEffect, useState, useReducer } from "react";
-import PagesDisplay from "../scrapper2/PagesDisplay";
 import SelectedItem from "./SelectedItem";
 
 function sourcesReducer(state: Source[], action: SourceAction): Source[] {
@@ -60,15 +59,13 @@ export default function Dash() {
 
   return (
     <div>
-      <h1>Dashboard</h1>
-      <p>Dashboard content</p>
+      <h1>Dashboard page</h1>
       <div className={styles.grid}>
         <div>
           <h2>Series</h2>
 
           {sources?.length > 0 && (
             <SelectableList
-              //items={data.map((e: Source) => e.name)}
               items={sources.map((e: Source) => e.name)}
               onSelectionChange={handleSelectionChange}
               selectedItem={selecteditem}

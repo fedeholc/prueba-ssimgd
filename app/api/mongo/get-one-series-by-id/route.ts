@@ -24,7 +24,7 @@ export async function POST(req: Request) {
   const result = await coll.findOne({ _id: ObjectId.createFromHexString(id) });
 
   console.log("result get one:", result);
-  await client.close(); //VER ojo, si se cierra la conexión y la tiene que volver a abrir en cada request, se hace más lenta la respuesta
+  //await client.close(); //VER ojo, si se cierra la conexión y la tiene que volver a abrir en cada request, se hace más lenta la respuesta y da errores cuando se seleccionan varias opciones del select muy rapido en el dash
   return Response.json(result, { status: 200 });
 
 }

@@ -44,6 +44,9 @@ export default function Dash() {
         return;
       }
       dispatch({ type: "load", payload: data });
+      if (data.length > 0) {
+        setSelectedItem(data[0].name);
+      }
     }
     fetchData();
   }, []);

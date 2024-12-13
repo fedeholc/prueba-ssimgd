@@ -6,29 +6,56 @@ import customStyles from "./customStyles.module.css";
 import useFetchSeries from "./useFetchSeries";
 import useFetch from "./useFetch";
 import useFetchOneSeries from "./useFetchOneSeries";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import PagesDisplay from "../scrapper2/PagesDisplay";
 
+function sourcesReducer(state: Source[], action: SourceAction): Source[] {
+  switch (action.type) {
+    case "add":
+      return [...state, action.payload];
+    case "remove":
+      return state.filter((source) => source._id !== action.payload);
+    case "update":
+      return state.map((source) =>
+        source._id === action.payload._id ? action.payload : source
+      );
+    case "load":
+      return action.payload;
+    default:
+      return state;
+  }
+}
 export default function Dash() {
-  /* const { data, isLoading, error } = useFetchSeries(
-    "http://localhost:3000/api/mongo"
-  ); */
-  const { data, isLoading, error } = useFetch<Source[]>(
-    "http://localhost:3000/api/mongo/get-all-series"
-  );
+  const [sources, dispatch] = useReducer(sourcesReducer, []);
 
-  const [selecteditems, setSelectedItems] = useState<string[]>([]);
+  const [selecteditem, setSelectedItem] = useState<string>("");
   const {
     selectedData,
     isLoading: isLoadingSelectedData,
     error: selectedDataError,
-  } = useFetchOneSeries(selecteditems.length > 0 ? selecteditems[0] : null);
+  } = useFetchOneSeries(selecteditem ?? null);
 
-  async function handleSelectionChange(selectedItems: string[]) {
-    if (selectedItems.length === 0) {
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("/api/mongo/get-all-series");
+      if (!response.ok) {
+        return;
+      }
+      const data = await response.json();
+      if (!data) {
+        return;
+      }
+      dispatch({ type: "load", payload: data });
+    }
+    fetchData();
+  }, []);
+
+  async function handleSelectionChange(selectedItem: string) {
+    console.log("handle Selected items: ", selectedItem);
+    if (!selectedItem) {
       return;
     }
-    setSelectedItems(selectedItems);
+    setSelectedItem(selectedItem);
   }
 
   return (
@@ -36,19 +63,17 @@ export default function Dash() {
       <h1>Dashboard</h1>
       <p>Dashboard content</p>
       <div className={styles.grid}>
-        <div
-          onClick={(e: React.MouseEvent) => {
-            console.log((e.target as HTMLElement).dataset.prueba);
-          }}
-        >
+        <div>
           <h2>Series</h2>
-          {isLoading && <div>Cargando...</div>}
-          {error && <div>Error al cargar los datos: {error}</div>}
-          {data && (
+
+          {sources?.length > 0 && (
             <SelectableList
-              items={data.map((e: Source) => e.name)}
+              //items={data.map((e: Source) => e.name)}
+              items={sources.map((e: Source) => e.name)}
               onSelectionChange={handleSelectionChange}
               mode="single"
+              selectedItem={selecteditem}
+              setSelectedItem={setSelectedItem}
             />
           )}
         </div>
@@ -58,7 +83,11 @@ export default function Dash() {
           {isLoadingSelectedData && <div>Cargando datos seleccionados...</div>}
           {selectedDataError && <div>Error: {selectedDataError}</div>}
           {!isLoadingSelectedData && selectedData && (
-            <SelectedItem selectedItem={selectedData} />
+            <SelectedItem
+              selectedItem={selectedData}
+              dispatch={dispatch}
+              setSelectedItem={setSelectedItem}
+            />
           )}
         </div>
       </div>
@@ -66,17 +95,25 @@ export default function Dash() {
   );
 }
 
-function SelectedItem({ selectedItem }: { selectedItem: Source }) {
+function SelectedItem({
+  selectedItem,
+  dispatch,
+  setSelectedItem,
+}: {
+  selectedItem: Source;
+  dispatch: React.Dispatch<SourceAction>;
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
+}) {
   const [sourceUrl, setSourceUrl] = useState<string>(selectedItem.url);
   const [sourceName, setSourceName] = useState<string>(selectedItem.name);
   const [sourceFetchOption, setSourceFetchOption] = useState<string>("base");
   const [sourceId, setSourceId] = useState<string>(selectedItem._id || "");
 
-  useEffect(() => {
+  /*   useEffect(() => {
     setSourceUrl(selectedItem.url);
     setSourceName(selectedItem.name);
     setSourceId(selectedItem._id || "");
-  }, [selectedItem]);
+  }, [selectedItem]); */
 
   async function handleSaveSource() {
     console.log("Saving source...");
@@ -117,6 +154,16 @@ function SelectedItem({ selectedItem }: { selectedItem: Source }) {
       alert("Source updated!");
       const data = await response.json();
       console.log("Response:", data);
+      dispatch({
+        type: "update",
+        payload: {
+          _id: sourceId,
+          name: sourceName,
+          url: sourceUrl,
+          pages: selectedItem.pages,
+        },
+      });
+      setSelectedItem(sourceName);
     }
   }
 

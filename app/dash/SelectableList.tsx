@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 
 interface SelectableListProps {
   items: string[];
-  onSelectionChange?: (selectedItems: string[]) => void;
+  onSelectionChange?: (selectedItems: string) => void;
   styles?: { [key: string]: string }; // Objeto para los estilos
   mode?: "single" | "multiple"; // Modo de selección
+  selectedItem: string | null; // Elemento seleccionado
+  setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }
 
 function SelectableList({
@@ -14,27 +16,14 @@ function SelectableList({
   onSelectionChange,
   styles = defaultStyles,
   mode = "single",
+  selectedItem,
+  setSelectedItem
 }: SelectableListProps) {
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (onSelectionChange) {
-      onSelectionChange(selectedItems);
-    }
-  }, [selectedItems, onSelectionChange]);
-
+ 
   function toggleItemSelection(item: string) {
     if (mode === "single") {
-      setSelectedItems([item]);
+      setSelectedItem(item);
       return;
-    } 
-    
-    if (mode === "multiple") {
-      setSelectedItems((prevSelected) =>
-        prevSelected.includes(item)
-          ? prevSelected.filter((selectedItem) => selectedItem !== item)
-          : [...prevSelected, item]
-      );
     }
   }
 
@@ -47,19 +36,13 @@ function SelectableList({
             key={index}
             onClick={() => toggleItemSelection(item)}
             className={`${styles.item} ${
-              selectedItems.includes(item)
-                ? styles.selected
-                : styles.notSelected
+              selectedItem?.includes(item) ? styles.selected : styles.notSelected
             }
             `}
           >
             {item}
           </div>
         ))}
-      </div>
-      <div>
-        <h3>Elementos Seleccionados:</h3>
-        <p>{selectedItems.join(", ")}</p>
       </div>
     </div>
   );

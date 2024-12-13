@@ -64,7 +64,7 @@ export default function SelectedItem({
           pages: selectedItem.pages,
         },
       });
-      setSelectedItem(sourceName);
+      setSelectedItem(sourceId);
     }
   }
 

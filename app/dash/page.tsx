@@ -6,6 +6,7 @@ import useFetchSeries from "./useFetchSeries";
 import useFetchOneSeries from "./useFetchOneSeries";
 import React, { useEffect, useState, useReducer } from "react";
 import SelectedItem from "./SelectedItem";
+import useFetchOneSeriesById from "./useFetchOneSeriesById";
 
 function sourcesReducer(state: Source[], action: SourceAction): Source[] {
   switch (action.type) {
@@ -26,12 +27,21 @@ function sourcesReducer(state: Source[], action: SourceAction): Source[] {
 export default function Dash() {
   const [sources, dispatch] = useReducer(sourcesReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
-
+/* 
   const {
     selectedData,
     isLoading: isLoadingSelectedData,
     error: selectedDataError,
   } = useFetchOneSeries(selecteditem);
+ */
+
+
+  const {
+    selectedData,
+    isLoading: isLoadingSelectedData,
+    error: selectedDataError,
+  } = useFetchOneSeriesById(selecteditem);
+
 
   useEffect(() => {
     async function fetchData() {
@@ -45,7 +55,7 @@ export default function Dash() {
       }
       dispatch({ type: "load", payload: data });
       if (data.length > 0) {
-        setSelectedItem(data[0].name);
+        setSelectedItem(data[0]._id);
       }
     }
     fetchData();
@@ -68,7 +78,7 @@ export default function Dash() {
 
           {sources?.length > 0 && (
             <SelectableList
-              items={sources.map((e: Source) => e.name)}
+              items={sources}
               onSelectionChange={handleSelectionChange}
               selectedItem={selecteditem}
             />

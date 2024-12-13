@@ -1,7 +1,7 @@
 import defaultStyles from "./SelectableList.module.css";
 
 interface SelectableListProps {
-  items: string[];
+  items: Source[];
   onSelectionChange: (selectedItems: string) => void;
   styles?: { [key: string]: string }; // Objeto para los estilos
   selectedItem: string | null; // Elemento seleccionado
@@ -15,10 +15,9 @@ function SelectableList({
 }: SelectableListProps) {
  
   function toggleItemSelection(item: string) {
-       onSelectionChange(item)
+       onSelectionChange(item);
       //setSelectedItem(item);
       return;
-   
   }
 
   return (
@@ -28,13 +27,13 @@ function SelectableList({
         {items.map((item, index) => (
           <div
             key={index}
-            onClick={() => toggleItemSelection(item)}
+            onClick={() => toggleItemSelection(item._id!)}
             className={`${styles.item} ${
-              selectedItem?.includes(item) ? styles.selected : styles.notSelected
+              selectedItem?.includes(item._id!) ? styles.selected : styles.notSelected
             }
             `}
           >
-            {item}
+            {item.name}
           </div>
         ))}
       </div>

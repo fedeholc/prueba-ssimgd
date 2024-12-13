@@ -21,10 +21,8 @@ export default function SelectedItem({
     setSourceId(selectedItem._id || "");
   }, [selectedItem]);
 
-  console.log("en Selected Item", selectedItem, sourceName, sourceUrl);
   async function handleSaveSource() {
     console.log("Saving source...");
-    // TODO: esta parte sería para cuando se agrega uno nuevo.
     if (sourceId === "0") {
       const response = await fetch("/api/mongo/save-source", {
         method: "POST",
@@ -43,7 +41,17 @@ export default function SelectedItem({
       const data = await response.json();
       setSourceId(data.insertedId);
       console.log("Response:", data);
-      //TODO: hay que hacer que el nuevo item aparezca en la lista seleccionado, y que se quite el que dice nuevo source
+      dispatch({ type: "remove", payload: "0" });
+      dispatch({
+        type: "add",
+        payload: {
+          _id: data.insertedId,
+          name: sourceName,
+          url: sourceUrl,
+          pages: selectedItem.pages,
+        },
+      });
+      setSelectedItem(data.insertedId);
     } else {
       console.log("Source already saved");
       const response = await fetch("/api/mongo/update-source", {

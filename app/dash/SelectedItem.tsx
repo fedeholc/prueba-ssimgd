@@ -1,5 +1,5 @@
 import PagesDisplay from "../scrapper2/PagesDisplay";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function SelectedItem({
   selectedItem,
@@ -15,10 +15,17 @@ export default function SelectedItem({
   const [sourceFetchOption, setSourceFetchOption] = useState<string>("base");
   const [sourceId, setSourceId] = useState<string>(selectedItem._id || "");
 
+  useEffect(() => {
+    setSourceUrl(selectedItem.url);
+    setSourceName(selectedItem.name);
+    setSourceId(selectedItem._id || "");
+  }, [selectedItem]);
+
+  console.log("en Selected Item", selectedItem, sourceName, sourceUrl);
   async function handleSaveSource() {
     console.log("Saving source...");
     // TODO: esta parte sería para cuando se agrega uno nuevo.
-    if (!sourceId) {
+    if (sourceId === "0") {
       const response = await fetch("/api/mongo/save-source", {
         method: "POST",
         headers: {
@@ -36,6 +43,7 @@ export default function SelectedItem({
       const data = await response.json();
       setSourceId(data.insertedId);
       console.log("Response:", data);
+      //TODO: hay que hacer que el nuevo item aparezca en la lista seleccionado, y que se quite el que dice nuevo source
     } else {
       console.log("Source already saved");
       const response = await fetch("/api/mongo/update-source", {

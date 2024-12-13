@@ -20,6 +20,7 @@ function SelectableList({
       return;
   }
 
+  console.log("selectable list items: ", items);
   return (
     <div>
       <h2>Lista Seleccionable</h2>
@@ -29,7 +30,7 @@ function SelectableList({
             key={index}
             onClick={() => toggleItemSelection(item._id!)}
             className={`${styles.item} ${
-              selectedItem?.includes(item._id!) ? styles.selected : styles.notSelected
+              selectedItem === item._id ? styles.selected : styles.notSelected
             }
             `}
           >

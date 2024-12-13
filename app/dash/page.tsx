@@ -11,7 +11,7 @@ import useFetchOneSeriesById from "./useFetchOneSeriesById";
 function sourcesReducer(state: Source[], action: SourceAction): Source[] {
   switch (action.type) {
     case "add":
-      return [...state, action.payload];
+      return [action.payload, ...state];
     case "remove":
       return state.filter((source) => source._id !== action.payload);
     case "update":
@@ -27,7 +27,7 @@ function sourcesReducer(state: Source[], action: SourceAction): Source[] {
 export default function Dash() {
   const [sources, dispatch] = useReducer(sourcesReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
-/* 
+  /* 
   const {
     selectedData,
     isLoading: isLoadingSelectedData,
@@ -35,13 +35,11 @@ export default function Dash() {
   } = useFetchOneSeries(selecteditem);
  */
 
-
   const {
     selectedData,
     isLoading: isLoadingSelectedData,
     error: selectedDataError,
   } = useFetchOneSeriesById(selecteditem);
-
 
   useEffect(() => {
     async function fetchData() {
@@ -69,9 +67,22 @@ export default function Dash() {
     setSelectedItem(selectedItem);
   }
 
+  function handleNewSource() {
+    dispatch({
+      type: "add",
+      payload: {
+        _id: "0",
+        name: "New source",
+        url: "",
+        pages: [],
+      },
+    });
+    handleSelectionChange("0");
+  }
   return (
     <div>
       <h1>Dashboard page</h1>
+      <button onClick={handleNewSource}>New source</button>
       <div className={styles.grid}>
         <div>
           <h2>Series</h2>

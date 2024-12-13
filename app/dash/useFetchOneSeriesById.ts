@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 
 
-export default function useFetchOneSeriesById(selectedItem: string|null) {
+export default function useFetchOneSeriesById(selectedItem: string | null) {
   const [selectedData, setSelectedData] = useState<Source | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+
 
   useEffect(() => {
     // Reset state cuando no hay item seleccionado
@@ -13,6 +15,7 @@ export default function useFetchOneSeriesById(selectedItem: string|null) {
       setError(null);
       return;
     }
+
 
     async function fetchSelectedData() {
       setIsLoading(true);
@@ -44,8 +47,22 @@ export default function useFetchOneSeriesById(selectedItem: string|null) {
       }
     }
 
-    fetchSelectedData();
+
+    console.log("selectedItem: ", selectedItem);
+    if (selectedItem === "0") {
+      setSelectedData({
+        _id: "0",
+        name: "name",
+        url: "url",
+        pages: [],
+      });
+
+    } else {
+
+      fetchSelectedData();
+    }
   }, [selectedItem]);
 
+  console.log("Mando selectedData: ", selectedData);
   return { selectedData, isLoading, error };
 }

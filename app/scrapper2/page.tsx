@@ -25,6 +25,7 @@ export default function Scrapper2() {
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [sourceName, setSourceName] = useState<string>("");
   const [sourceFetchOption, setSourceFetchOption] = useState<string>("base");
+  
   const [SPFilterInclude, setSPFilterInclude] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -79,6 +80,26 @@ export default function Scrapper2() {
     }
   }
 
+  async function handleSaveSource() {
+    console.log("Saving source...");
+    const response = await fetch("/api/mongo/save-source", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        source: {
+          name: sourceName,
+          url: sourceUrl,
+          pages: sourceReducer.pages,
+        },
+      }),
+    });
+    alert("Source saved!");
+    const data = await response.json();
+    console.log("Response:", data);
+  }
+
   return (
     <div className={styles.page}>
       <h3>Add a new source</h3>
@@ -117,6 +138,12 @@ export default function Scrapper2() {
       </div>
       <button onClick={handleGetData} disabled={isLoading || !sourceUrl}>
         {isLoading ? loadingMessage : "Download Data"}
+      </button>
+      <button
+        onClick={handleSaveSource}
+        disabled={isLoading || !sourceUrl || !sourceName}
+      >
+        Save Source
       </button>
 
       {/*  <label>Sub Pages Filter</label>

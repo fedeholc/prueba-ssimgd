@@ -6,7 +6,7 @@ type Series = {
 };
 
 export default function useFetchOneSeries(selectedItem: string|null) {
-  const [selectedData, setSelectedData] = useState<Series | null>(null);
+  const [selectedData, setSelectedData] = useState<Source | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

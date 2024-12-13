@@ -1,5 +1,5 @@
 
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 
 const uri = process.env.MONGODB_URI || "ERROR: No URI provided";
 
@@ -22,12 +22,8 @@ export async function POST(req: Request) {
   const database = client.db("ssaver");
   const coll = database.collection("series");
   const doc = source;
-  console.log("Updating document", doc);
 
-  //TODO: por qué no lo encuentra para el update??
-  const find = await coll.findOne({ _id: doc._id });
-  console.log("Found document", find);
-  const result = await coll.updateOne({ _id: doc._id }, { $set: doc });
+  const result = await coll.updateOne({ _id: ObjectId.createFromHexString(doc._id) }, { $set: { name: doc.name, url: doc.url, pages: doc.pages } });
   console.log("Updated document", result);
   await client.close();
   return Response.json(result, { status: 200 });

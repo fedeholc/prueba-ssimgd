@@ -1,0 +1,12 @@
+type Page = {
+  url: string;
+  images: string[];
+};
+type Source = {
+  _id?: string;
+  name: string;
+  url: string;
+  pages: Page[];
+};
+
+type Action = { type: "add"; payload: Page } | { type: "reset-pages" };

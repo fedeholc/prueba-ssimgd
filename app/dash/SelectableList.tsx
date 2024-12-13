@@ -41,7 +41,7 @@ function SelectableList({
   return (
     <div>
       <h2>Lista Seleccionable</h2>
-      <div>
+      <div className={styles.list}>
         {items.map((item, index) => (
           <div
             key={index}

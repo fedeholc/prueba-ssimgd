@@ -3,18 +3,7 @@
 "use client";
 import styles from "./page.module.css";
 import { useState, useReducer } from "react";
-
-type Page = {
-  url: string;
-  images: string[];
-};
-type Source = {
-  name: string;
-  url: string;
-  pages: Page[];
-};
-
-type Action = { type: "add"; payload: Page } | { type: "reset-pages" };
+import PagesDisplay from "./PagesDisplay";
 
 const endPoints = {
   getSubPages: "/api/get-subpages",
@@ -187,36 +176,6 @@ export default function Scrapper2() {
   );
 }
 
-function PagesDisplay({ pages }: { pages: Page[] }) {
-  console.log("Init PagesDisplay", pages);
-  return (
-    <div>
-      {pages.map((page, index) => (
-        <details key={`${page.url}${index}`}>
-          <summary>
-            {page.url} - {page.images?.length || 0} images
-          </summary>
-
-          <div className="img-grid">
-            {page.images?.length === 0 && <div>No hay imágenes</div>}
-            {page.images?.map((image: string, index: number) => (
-              <div key={image}>
-                <a href={image} target="_blank" rel="noopener noreferrer">
-                  {image}
-                </a>
-                <img
-                  style={{ maxHeight: "200px" }}
-                  src={image}
-                  alt={`Imagen ${index}`}
-                />
-              </div>
-            ))}
-          </div>
-        </details>
-      ))}
-    </div>
-  );
-}
 
 async function getSubPages(apiEndPoint: string, sourceUrl: string) {
   const sanitizedUrl =

@@ -25,7 +25,7 @@ export default function Scrapper2() {
   const [sourceUrl, setSourceUrl] = useState<string>("");
   const [sourceName, setSourceName] = useState<string>("");
   const [sourceFetchOption, setSourceFetchOption] = useState<string>("base");
-  
+  const [sourceId, setSourceId] = useState<string>("");
   const [SPFilterInclude, setSPFilterInclude] = useState<string>("");
 
   const [isLoading, setIsLoading] = useState(false);
@@ -82,27 +82,50 @@ export default function Scrapper2() {
 
   async function handleSaveSource() {
     console.log("Saving source...");
-    const response = await fetch("/api/mongo/save-source", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        source: {
-          name: sourceName,
-          url: sourceUrl,
-          pages: sourceReducer.pages,
+    if (!sourceId) {
+      const response = await fetch("/api/mongo/save-source", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
-    alert("Source saved!");
-    const data = await response.json();
-    console.log("Response:", data);
+        body: JSON.stringify({
+          source: {
+            name: sourceName,
+            url: sourceUrl,
+            pages: sourceReducer.pages,
+          },
+        }),
+      });
+      alert("Source saved!");
+      const data = await response.json();
+      setSourceId(data.insertedId);
+      console.log("Response:", data);
+    } else {
+      console.log("Source already saved");
+      const response = await fetch("/api/mongo/update-source", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          source: {
+            _id: sourceId,
+            name: sourceName,
+            url: sourceUrl,
+            pages: sourceReducer.pages,
+          },
+        }),
+      });
+      alert("Source updated!");
+      const data = await response.json();
+      console.log("Response:", data);
+    }
   }
 
   return (
     <div className={styles.page}>
       <h3>Add a new source</h3>
+      <div>Source Id: {sourceId}</div>
       <label>Name</label>
       <input
         type="text"

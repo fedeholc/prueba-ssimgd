@@ -39,6 +39,8 @@ export default function useFetchOneSeriesById(selectedItem: string | null) {
 
         const responseData = await response.json();
         setSelectedData(responseData);
+        setError(null);
+
       } catch (err) {
         setError(err instanceof Error ? err.message : "An unknown error occurred");
         setSelectedData(null);

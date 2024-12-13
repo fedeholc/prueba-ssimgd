@@ -22,8 +22,6 @@ function SelectableList({
 
   console.log("selectable list items: ", items);
   return (
-    <div>
-      <h2>Lista Seleccionable</h2>
       <div className={styles.list}>
         {items.map((item, index) => (
           <div
@@ -38,7 +36,6 @@ function SelectableList({
           </div>
         ))}
       </div>
-    </div>
   );
 }
 

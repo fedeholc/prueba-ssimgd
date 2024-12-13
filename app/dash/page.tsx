@@ -109,14 +109,11 @@ function SelectedItem({
   const [sourceFetchOption, setSourceFetchOption] = useState<string>("base");
   const [sourceId, setSourceId] = useState<string>(selectedItem._id || "");
 
-  /*   useEffect(() => {
-    setSourceUrl(selectedItem.url);
-    setSourceName(selectedItem.name);
-    setSourceId(selectedItem._id || "");
-  }, [selectedItem]); */
+ 
 
   async function handleSaveSource() {
     console.log("Saving source...");
+    // TODO: esta parte sería para cuando se agrega uno nuevo.
     if (!sourceId) {
       const response = await fetch("/api/mongo/save-source", {
         method: "POST",

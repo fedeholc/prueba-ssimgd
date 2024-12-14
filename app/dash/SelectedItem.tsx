@@ -97,7 +97,7 @@ export default function SelectedItem({
           return state;
       }
     },
-    { name: "", url: "", pages: [] }
+    { _id: "", name: "", url: "", pages: [] }
   );
 
   useEffect(() => {

@@ -1,16 +1,17 @@
-type Page = {
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+ type Page = {
   url: string;
   images: string[];
 };
 
 type Source = {
-  _id?: string;
+  _id: string;
   name: string;
   url: string;
   pages: Page[];
 };
 
-// create a partial type, only _id and name from Source
 type SourceListItem = Pick<Source, "_id" | "name">;
 
 type Action = { type: "add"; payload: Page } | { type: "reset-pages" } | { type: "load"; payload: Source };

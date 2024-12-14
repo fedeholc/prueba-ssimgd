@@ -1,4 +1,4 @@
-import defaultStyles from "./SelectableList.module.css";
+import defaultStyles from "./SourcesList.module.css";
 
 interface SourcesListProps {
   items: SourceListItem[];

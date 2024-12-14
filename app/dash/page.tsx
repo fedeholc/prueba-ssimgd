@@ -27,13 +27,6 @@ function sourcesReducer(state: Source[], action: SourceListAction): Source[] {
 export default function Dash() {
   const [sourceList, sourceListDispatch] = useReducer(sourcesReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
-  /* 
-  const {
-    selectedData,
-    isLoading: isLoadingSelectedData,
-    error: selectedDataError,
-  } = useFetchOneSeries(selecteditem);
- */
 
   const {
     selectedData,
@@ -41,6 +34,7 @@ export default function Dash() {
     error: selectedDataError,
   } = useFetchOneSeriesById(selecteditem);
 
+  //TODO: hay que hacer que traiga solo los ids y nombres
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("/api/mongo/get-all-series");

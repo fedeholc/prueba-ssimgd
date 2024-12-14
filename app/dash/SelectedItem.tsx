@@ -42,8 +42,6 @@ export default function SelectedItem({
         payload: {
           _id: data.insertedId,
           name: source.name,
-          url: source.url,
-          pages: source.pages,
         },
       });
       setSelectedItem(data.insertedId);
@@ -71,8 +69,7 @@ export default function SelectedItem({
         payload: {
           _id: source._id,
           name: source.name,
-          url: source.url,
-          pages: source.pages,
+ 
         },
       });
       setSelectedItem(source._id!);

@@ -1,40 +1,17 @@
 "use client";
 import styles from "./page.module.css";
 import SelectableList from "./SelectableList";
-//import useFetchSeries from "./useFetchSeries";
-//import useFetchOneSeries from "./useFetchOneSeries";
 import React, { useEffect, useState, useReducer } from "react";
 import SelectedItem from "./SelectedItem";
-//import useFetchOneSeriesById from "./useFetchOneSeriesById";
+import sourcesListReducer from "./sourcesListReducer";
 
-function sourcesListReducer(
-  state: SourceListItem[],
-  action: SourceListAction
-): SourceListItem[] {
-  switch (action.type) {
-    case "add":
-      return [action.payload, ...state];
-    case "remove":
-      return state.filter((source) => source._id !== action.payload);
-    case "update":
-      return state.map((source) =>
-        source._id === action.payload._id ? action.payload : source
-      );
-    case "load":
-      return action.payload;
-    default:
-      return state;
-  }
-}
 export default function Dash() {
   const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
 
- 
-
-  //TODO: hay que hacer que traiga solo los ids y nombres
+  // loads the list of sources and selects the first one
   useEffect(() => {
-    async function fetchData() {
+    async function fetchSourceListData() {
       const response = await fetch("/api/mongo/get-sources-list");
       if (!response.ok) {
         return;
@@ -48,25 +25,25 @@ export default function Dash() {
         setSelectedItem(data[0]._id);
       }
     }
-    fetchData();
+    fetchSourceListData();
   }, []);
 
   async function handleSelectionChange(selectedItem: string) {
-    console.log("handle Selected items: ", selectedItem);
     if (!selectedItem) {
       return;
     }
     setSelectedItem(selectedItem);
   }
 
+  // adds a new source to the list, selects it
+  // the new source is not saved to the database until the user clicks "Save"
+  // the new source is identified by the _id "0"
   function handleNewSource() {
     sourceListDispatch({
       type: "add",
       payload: {
         _id: "0",
         name: "New source",
-        url: "",
-        pages: [],
       },
     });
     handleSelectionChange("0");
@@ -92,13 +69,11 @@ export default function Dash() {
         <div>
           <h2>Selected item</h2>
 
- 
-            <SelectedItem
-              selectedItem={selecteditem}
-              sourceDispatch={sourceListDispatch}
-              setSelectedItem={setSelectedItem}
-            />
-     
+          <SelectedItem
+            selectedItem={selecteditem}
+            sourceDispatch={sourceListDispatch}
+            setSelectedItem={setSelectedItem}
+          />
         </div>
       </div>
     </div>

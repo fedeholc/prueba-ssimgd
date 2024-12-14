@@ -18,4 +18,4 @@ type Action = { type: "add"; payload: Page } | { type: "reset-pages" } | { type:
 
 type OneSourceAction = { type: "add"; payload: Page } | { type: "reset-pages" } | { type: "load"; payload: Source } | { type: "update"; payload: Source };
 
-type SourceListAction = { type: "add"; payload: Source } | { type: "load"; payload: Source[] } | { type: "remove", payload: string } | { type: "update"; payload: Source };
+type SourceListAction = { type: "add"; payload: SourceListItem } | { type: "load"; payload: SourceListItem[] } | { type: "remove", payload: string } | { type: "update"; payload: SourceListItem };

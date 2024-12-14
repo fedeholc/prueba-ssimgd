@@ -1,33 +1,11 @@
 
-import { MongoClient, ServerApiVersion } from "mongodb";
-
-const uri = process.env.MONGODB_URI || "ERROR: No URI provided";
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
+import { getDatabase } from "../../../lib/mongodb";
 
 export async function POST(req: Request) {
-
   const { name } = await req.json();
-
-  await client.connect();
-  // Send a ping to confirm a successful connection
-  const database = client.db("ssaver");
+  const database = await getDatabase();
   const coll = database.collection("series");
   const doc = { name: name, shape: "round" };
   const result = await coll.insertOne(doc);
-  console.log(
-    `A document was inserted with the _id: ${result.insertedId}`,
-  );
-
-  await client.close();
-  return Response.json("a",{status:200});
-
+  return Response.json(result, { status: 200 });
 }

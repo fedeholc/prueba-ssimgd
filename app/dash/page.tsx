@@ -8,10 +8,11 @@ import sourcesListReducer from "./sourcesListReducer";
 export default function Dash() {
   const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
-
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   // loads the list of sources and selects the first one
   useEffect(() => {
     async function fetchSourceListData() {
+      setLoadingMessage("Loading sources...");
       const response = await fetch("/api/mongo/get-sources-list");
       if (!response.ok) {
         return;
@@ -24,6 +25,7 @@ export default function Dash() {
       if (data.length > 0) {
         setSelectedItem(data[0]._id);
       }
+      setLoadingMessage("");
     }
     fetchSourceListData();
   }, []);
@@ -58,6 +60,10 @@ export default function Dash() {
         <div>
           <h2>Series</h2>
 
+          {loadingMessage && <p>{loadingMessage}</p>}
+          {sourceList?.length === 0 && !loadingMessage && (
+            <p>No sources found</p>
+          )}
           {sourceList?.length > 0 && (
             <SourcesList
               items={sourceList}

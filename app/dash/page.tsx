@@ -1,8 +1,8 @@
 "use client";
 import styles from "./page.module.css";
-import SelectableList from "./SelectableList";
+import SourcesList from "./SourcesList";
 import React, { useEffect, useState, useReducer } from "react";
-import SelectedItem from "./SelectedItem";
+import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
 
 export default function Dash() {
@@ -59,9 +59,9 @@ export default function Dash() {
           <h2>Series</h2>
 
           {sourceList?.length > 0 && (
-            <SelectableList
+            <SourcesList
               items={sourceList}
-              onSelectionChange={handleSelectionChange}
+              handleSelectionChange={handleSelectionChange}
               selectedItem={selecteditem}
             />
           )}
@@ -69,7 +69,7 @@ export default function Dash() {
         <div>
           <h2>Selected item</h2>
 
-          <SelectedItem
+          <SelectedSource
             selectedItem={selecteditem}
             sourceDispatch={sourceListDispatch}
             setSelectedItem={setSelectedItem}

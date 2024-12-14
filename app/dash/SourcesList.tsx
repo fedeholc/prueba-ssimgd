@@ -1,21 +1,20 @@
 import defaultStyles from "./SelectableList.module.css";
 
-interface SelectableListProps {
+interface SourcesListProps {
   items: SourceListItem[];
-  onSelectionChange: (selectedItems: string) => void;
+  handleSelectionChange: (selectedItems: string) => void;
   styles?: { [key: string]: string }; // Objeto para los estilos
   selectedItem: string | null; // Elemento seleccionado
 }
 
-function SelectableList({
+function SourcesList({
   items,
-  onSelectionChange,
+  handleSelectionChange: handleSelectionChange,
   styles = defaultStyles,
   selectedItem,
-}: SelectableListProps) {
+}: SourcesListProps) {
   function toggleItemSelection(item: string) {
-    onSelectionChange(item);
-    //setSelectedItem(item);
+    handleSelectionChange(item);
     return;
   }
 
@@ -38,4 +37,4 @@ function SelectableList({
   );
 }
 
-export default SelectableList;
+export default SourcesList;

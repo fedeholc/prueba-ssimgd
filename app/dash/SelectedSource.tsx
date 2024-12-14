@@ -5,7 +5,7 @@ const endPoints = {
   getImages: "/api/get-images",
 };
 
-export default function SelectedItem({
+export default function SelectedSource({
   selectedItem,
   sourceDispatch: sourcesDispatch,
   setSelectedItem,
@@ -69,7 +69,6 @@ export default function SelectedItem({
         payload: {
           _id: source._id,
           name: source.name,
- 
         },
       });
       setSelectedItem(source._id!);

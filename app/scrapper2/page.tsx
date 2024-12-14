@@ -3,7 +3,7 @@
 "use client";
 import styles from "./page.module.css";
 import { useState, useReducer } from "react";
-import PagesDisplay from "./PagesDisplay";
+import PagesDisplay from "../dash/PagesDisplay";
 
 const endPoints = {
   getSubPages: "/api/get-subpages",
@@ -20,7 +20,7 @@ export default function Scrapper2() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
-  const [sourceReducer, dispatch] = useReducer(
+  const [pages, pagesDispatch] = useReducer(
     (state: Source, action: Action) => {
       switch (action.type) {
         case "add":
@@ -36,7 +36,7 @@ export default function Scrapper2() {
 
   async function handleGetData() {
     setIsLoading(true);
-    dispatch({ type: "reset-pages" });
+    pagesDispatch({ type: "reset-pages" });
     setLoadingMessage("Cargando páginas...");
 
     try {
@@ -56,10 +56,13 @@ export default function Scrapper2() {
         setLoadingMessage(`Cargando páginas...(${count}/${pages.length})`);
         try {
           const imgUrls: string[] = await getImages(endPoints.getImages, page);
-          dispatch({ type: "add", payload: { url: page, images: imgUrls } });
+          pagesDispatch({
+            type: "add",
+            payload: { url: page, images: imgUrls },
+          });
         } catch (error) {
           console.error(`Error fetching images for ${page}:`, error);
-          dispatch({ type: "add", payload: { url: page, images: [] } });
+          pagesDispatch({ type: "add", payload: { url: page, images: [] } });
         }
       }
     } catch (error) {
@@ -81,7 +84,7 @@ export default function Scrapper2() {
           source: {
             name: sourceName,
             url: sourceUrl,
-            pages: sourceReducer.pages,
+            pages: pages.pages,
           },
         }),
       });
@@ -101,7 +104,7 @@ export default function Scrapper2() {
             _id: sourceId,
             name: sourceName,
             url: sourceUrl,
-            pages: sourceReducer.pages,
+            pages: pages.pages,
           },
         }),
       });
@@ -167,15 +170,12 @@ export default function Scrapper2() {
  */}
       {isLoading && <div>{loadingMessage}</div>}
 
-      {sourceReducer.pages.length > 0 && (
-        <PagesDisplay pages={sourceReducer.pages} />
-      )}
+      {pages.pages.length > 0 && <PagesDisplay pages={pages.pages} />}
 
       <div>------------------------------------------</div>
     </div>
   );
 }
-
 
 async function getSubPages(apiEndPoint: string, sourceUrl: string) {
   const sanitizedUrl =

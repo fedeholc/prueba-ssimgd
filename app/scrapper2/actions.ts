@@ -1,5 +1,5 @@
 
-import { Page } from './types';
+
 
 export const ADD_PAGE = 'ADD_PAGE';
 

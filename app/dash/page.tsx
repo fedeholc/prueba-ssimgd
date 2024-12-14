@@ -8,7 +8,7 @@ import React, { useEffect, useState, useReducer } from "react";
 import SelectedItem from "./SelectedItem";
 import useFetchOneSeriesById from "./useFetchOneSeriesById";
 
-function sourcesReducer(state: Source[], action: SourceAction): Source[] {
+function sourcesReducer(state: Source[], action: SourceListAction): Source[] {
   switch (action.type) {
     case "add":
       return [action.payload, ...state];
@@ -25,7 +25,7 @@ function sourcesReducer(state: Source[], action: SourceAction): Source[] {
   }
 }
 export default function Dash() {
-  const [sources, dispatch] = useReducer(sourcesReducer, []);
+  const [sourceList, sourceListDispatch] = useReducer(sourcesReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
   /* 
   const {
@@ -51,7 +51,7 @@ export default function Dash() {
       if (!data) {
         return;
       }
-      dispatch({ type: "load", payload: data });
+      sourceListDispatch({ type: "load", payload: data });
       if (data.length > 0) {
         setSelectedItem(data[0]._id);
       }
@@ -68,7 +68,7 @@ export default function Dash() {
   }
 
   function handleNewSource() {
-    dispatch({
+    sourceListDispatch({
       type: "add",
       payload: {
         _id: "0",
@@ -79,17 +79,19 @@ export default function Dash() {
     });
     handleSelectionChange("0");
   }
+
   return (
     <div>
       <h1>Dashboard page</h1>
       <button onClick={handleNewSource}>New source</button>
+
       <div className={styles.grid}>
         <div>
           <h2>Series</h2>
 
-          {sources?.length > 0 && (
+          {sourceList?.length > 0 && (
             <SelectableList
-              items={sources}
+              items={sourceList}
               onSelectionChange={handleSelectionChange}
               selectedItem={selecteditem}
             />
@@ -102,8 +104,8 @@ export default function Dash() {
           {selectedDataError && <div>Error: {selectedDataError}</div>}
           {!isLoadingSelectedData && selectedData && (
             <SelectedItem
-              selectedItem={selectedData}
-              dispatch={dispatch}
+              selectedItem={selecteditem}
+              sourceDispatch={sourceListDispatch}
               setSelectedItem={setSelectedItem}
             />
           )}

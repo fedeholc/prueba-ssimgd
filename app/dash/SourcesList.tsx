@@ -3,8 +3,8 @@ import defaultStyles from "./SourcesList.module.css";
 interface SourcesListProps {
   items: SourceListItem[];
   handleSelectionChange: (selectedItems: string) => void;
-  styles?: { [key: string]: string }; // Objeto para los estilos
-  selectedItem: string | null; // Elemento seleccionado
+  styles?: { [key: string]: string };
+  selectedItem: string | null;
 }
 
 function SourcesList({
@@ -18,10 +18,9 @@ function SourcesList({
     return;
   }
 
-  console.log("selectable list items: ", items);
   return (
     <div className={styles.list}>
-      {items.map((item, index) => (
+      {items?.map((item, index) => (
         <div
           key={index}
           onClick={() => toggleItemSelection(item._id!)}

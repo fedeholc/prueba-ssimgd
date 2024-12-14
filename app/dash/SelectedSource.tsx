@@ -1,8 +1,11 @@
 import PagesDisplay from "./PagesDisplay";
 import React, { useEffect, useState, useReducer } from "react";
+import { getImages, getSubPages } from "./utils";
 const endPoints = {
   getSubPages: "/api/get-subpages",
   getImages: "/api/get-images",
+  saveSource: "/api/mongo/save-source",
+  updateSource: "/api/mongo/update-source",
 };
 
 export default function SelectedSource({
@@ -15,87 +18,19 @@ export default function SelectedSource({
   setSelectedItem: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [sourceFetchOption, setSourceFetchOption] = useState<string>("base");
+  const [isLoadingImages, setIsLoadingImages] = useState(false);
+  const [loadingImagesMessage, setLoadingImagesMessage] = useState<string>("");
+  const [loadingSourceMessage, setLoadingSourceMessage] = useState<string>("");
+  const [source, sourceDispatch] = useReducer(sourceReducer, {
+    _id: "",
+    name: "",
+    url: "",
+    pages: [],
+  });
 
-  async function handleSaveSource() {
-    console.log("Saving source...");
-    if (source._id === "0") {
-      const response = await fetch("/api/mongo/save-source", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          source: {
-            name: source.name,
-            url: source.url,
-            pages: source.pages,
-          },
-        }),
-      });
-      alert("Source saved!");
-      const data = await response.json();
-      //setSourceId(data.insertedId);
-      console.log("Response:", data);
-      sourcesDispatch({ type: "remove", payload: "0" });
-      sourcesDispatch({
-        type: "add",
-        payload: {
-          _id: data.insertedId,
-          name: source.name,
-        },
-      });
-      setSelectedItem(data.insertedId);
-    } else {
-      console.log("Source already saved");
-      const response = await fetch("/api/mongo/update-source", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          source: {
-            _id: source._id,
-            name: source.name,
-            url: source.url,
-            pages: source.pages,
-          },
-        }),
-      });
-      alert("Source updated!");
-      const data = await response.json();
-      console.log("Response:", data);
-      sourcesDispatch({
-        type: "update",
-        payload: {
-          _id: source._id,
-          name: source.name,
-        },
-      });
-      setSelectedItem(source._id!);
-    }
-  }
-
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState<string>("");
-
-  const [source, sourceDispatch] = useReducer(
-    (state: Source, action: OneSourceAction) => {
-      switch (action.type) {
-        case "add":
-          return { ...state, pages: [...state.pages, action.payload] };
-        case "reset-pages":
-          return { ...state, pages: [] };
-        case "update":
-          return state._id === action.payload._id ? action.payload : state;
-        case "load":
-          return action.payload;
-        default:
-          return state;
-      }
-    },
-    { _id: "", name: "", url: "", pages: [] }
-  );
-
+  // fetches the source data when the selected item changes and sends it to the
+  // reducer. If it is a new source, it initializes the source with default
+  // values
   useEffect(() => {
     if (!selectedItem) {
       return;
@@ -115,11 +50,11 @@ export default function SelectedSource({
       if (!response.ok) {
         throw new Error("Error al obtener los datos");
       }
-
       const responseData = await response.json();
       sourceDispatch({ type: "load", payload: responseData });
     }
 
+    // for new sources
     if (selectedItem === "0") {
       sourceDispatch({
         type: "load",
@@ -130,31 +65,38 @@ export default function SelectedSource({
           pages: [],
         },
       });
-    } else {
+    }
+    // for existing sources
+    else {
       fetchSourceData();
     }
   }, [selectedItem]);
 
+  // fetches the pages and images for the source
   async function handleGetData() {
-    setIsLoading(true);
+    setIsLoadingImages(true);
     sourceDispatch({ type: "reset-pages" });
-    setLoadingMessage("Cargando páginas...");
+    setLoadingImagesMessage("Cargando páginas...");
 
     try {
       const sanitizedUrl =
         source.url.startsWith("http://") || source.url.startsWith("https://")
           ? source.url
           : "https://" + source.url;
+
+      // add the base url to the pages array
       const pages = [sanitizedUrl];
 
       if (sourceFetchOption === "subpages") {
+        // add the subpages to the pages array
         pages.push(...(await getSubPages(endPoints.getSubPages, source.url)));
       }
 
+      // get the images from each page
       let count = 0;
       for (const page of pages) {
         count++;
-        setLoadingMessage(`Cargando páginas...(${count}/${pages.length})`);
+        setLoadingImagesMessage(`Loading page...(${count}/${pages.length})`);
         try {
           const imgUrls: string[] = await getImages(endPoints.getImages, page);
           sourceDispatch({
@@ -169,8 +111,75 @@ export default function SelectedSource({
     } catch (error) {
       console.error("Error fetching pages:", error);
     } finally {
-      setIsLoading(false);
+      setIsLoadingImages(false);
     }
+  }
+
+  //TODO: cambiar los alerts por otra cosa
+  async function handleSaveSource() {
+    setLoadingSourceMessage("Saving source...");
+    // if the source is new, save it
+    if (source._id === "0") {
+      try {
+        const response = await fetch(endPoints.saveSource, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            source: {
+              name: source.name,
+              url: source.url,
+              pages: source.pages,
+            },
+          }),
+        });
+        const data = await response.json();
+        sourcesDispatch({ type: "remove", payload: "0" });
+        sourcesDispatch({
+          type: "add",
+          payload: {
+            _id: data.insertedId,
+            name: source.name,
+          },
+        });
+        setSelectedItem(data.insertedId);
+      } catch (error) {
+        console.error("Error saving source:", error);
+        return;
+      }
+    }
+    // if the source is not new, update it
+    else {
+      try {
+        await fetch(endPoints.updateSource, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            source: {
+              _id: source._id,
+              name: source.name,
+              url: source.url,
+              pages: source.pages,
+            },
+          }),
+        });
+        sourcesDispatch({
+          type: "update",
+          payload: {
+            _id: source._id,
+            name: source.name,
+          },
+        });
+        setSelectedItem(source._id!);
+      } catch (error) {
+        console.error("Error updating source:", error);
+        return;
+      }
+    }
+    setLoadingSourceMessage("");
   }
 
   return (
@@ -224,9 +233,17 @@ export default function SelectedSource({
               Fetch with subpages
             </label>
           </div>
-          <button onClick={handleSaveSource}>Save Source</button>
-          <button onClick={handleGetData} disabled={isLoading || !source.url}>
-            {isLoading ? loadingMessage : "Download Data"}
+          <button
+            onClick={handleSaveSource}
+            disabled={loadingSourceMessage !== ""}
+          >
+            Save Source {loadingSourceMessage}
+          </button>
+          <button
+            onClick={handleGetData}
+            disabled={isLoadingImages || !source.url}
+          >
+            {isLoadingImages ? loadingImagesMessage : "Download Data"}
           </button>
           <PagesDisplay pages={source.pages || []} />
         </div>
@@ -235,30 +252,17 @@ export default function SelectedSource({
   );
 }
 
-async function getSubPages(apiEndPoint: string, sourceUrl: string) {
-  const sanitizedUrl =
-    sourceUrl.startsWith("http://") || sourceUrl.startsWith("https://")
-      ? sourceUrl
-      : "https://" + sourceUrl;
-  const response = await fetch(apiEndPoint, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({ url: sanitizedUrl }),
-  });
-  const data = await response.json();
-  return data;
-}
-
-async function getImages(apiEndPoint: string, pageUrl: string) {
-  const response = await fetch(apiEndPoint, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-    body: JSON.stringify({ url: pageUrl }),
-  });
-  const data = await response.json();
-  return data;
+function sourceReducer(state: Source, action: OneSourceAction) {
+  switch (action.type) {
+    case "add":
+      return { ...state, pages: [...state.pages, action.payload] };
+    case "reset-pages":
+      return { ...state, pages: [] };
+    case "update":
+      return state._id === action.payload._id ? action.payload : state;
+    case "load":
+      return action.payload;
+    default:
+      return state;
+  }
 }

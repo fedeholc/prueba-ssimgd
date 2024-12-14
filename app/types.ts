@@ -10,6 +10,9 @@ type Source = {
   pages: Page[];
 };
 
+// create a partial type, only _id and name from Source
+type SourceListItem = Pick<Source, "_id" | "name">;
+
 type Action = { type: "add"; payload: Page } | { type: "reset-pages" } | { type: "load"; payload: Source };
 
 type OneSourceAction = { type: "add"; payload: Page } | { type: "reset-pages" } | { type: "load"; payload: Source } | { type: "update"; payload: Source };

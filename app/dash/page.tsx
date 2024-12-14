@@ -8,7 +8,10 @@ import React, { useEffect, useState, useReducer } from "react";
 import SelectedItem from "./SelectedItem";
 import useFetchOneSeriesById from "./useFetchOneSeriesById";
 
-function sourcesReducer(state: Source[], action: SourceListAction): Source[] {
+function sourcesListReducer(
+  state: SourceListItem[],
+  action: SourceListAction
+): SourceListItem[] {
   switch (action.type) {
     case "add":
       return [action.payload, ...state];
@@ -25,19 +28,15 @@ function sourcesReducer(state: Source[], action: SourceListAction): Source[] {
   }
 }
 export default function Dash() {
-  const [sourceList, sourceListDispatch] = useReducer(sourcesReducer, []);
+  const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
 
-  const {
-    selectedData,
-    isLoading: isLoadingSelectedData,
-    error: selectedDataError,
-  } = useFetchOneSeriesById(selecteditem);
+ 
 
   //TODO: hay que hacer que traiga solo los ids y nombres
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("/api/mongo/get-all-series");
+      const response = await fetch("/api/mongo/get-sources-list");
       if (!response.ok) {
         return;
       }
@@ -94,15 +93,13 @@ export default function Dash() {
         <div>
           <h2>Selected item</h2>
 
-          {isLoadingSelectedData && <div>Cargando datos seleccionados...</div>}
-          {selectedDataError && <div>Error: {selectedDataError}</div>}
-          {!isLoadingSelectedData && selectedData && (
+ 
             <SelectedItem
               selectedItem={selecteditem}
               sourceDispatch={sourceListDispatch}
               setSelectedItem={setSelectedItem}
             />
-          )}
+     
         </div>
       </div>
     </div>

@@ -101,6 +101,9 @@ export default function SelectedItem({
   );
 
   useEffect(() => {
+    if (!selectedItem) {
+      return;
+    }
     async function fetchSourceData() {
       const response = await fetch(
         "http://localhost:3000/api/mongo/get-one-series-by-id",

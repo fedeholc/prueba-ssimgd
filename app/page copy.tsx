@@ -6,20 +6,6 @@ import EmojiSpinnerButton from "./ButtonEmojiSpinner";
 import { useState } from "react";
 
 function useNotify() {
-  const [notifyState, setNotifyState] = useState<
-    "busy" | "done" | "error" | null
-  >(null);
-
-  const notify = {
-    setBusy: () => setNotifyState("busy"),
-    setDone: () => setNotifyState("done"),
-    setError: () => setNotifyState("error"),
-    getState: notifyState,
-  };
-  return { notify };
-}
-
-function useNotify2() {
   const [notifyState, setNotifyState] = useState<{
     status: string;
     message?: string;
@@ -44,7 +30,8 @@ export default function Home() {
   };
 
   const { notify } = useNotify();
-  const { notify: notify2 } = useNotify2();
+
+ 
 
   return (
     <div className={styles.page}>
@@ -62,31 +49,18 @@ export default function Home() {
       <div style={{ display: "flex", flexDirection: "row" }}>
         <button
           onClick={() => {
-            notify.setBusy();
-            setTimeout(() => notify.setDone(), 2000);
+            notify.setState({ status: "busy", message: "loading..." });
+            setTimeout(() => notify.setState({ status: "done", message: "ready..." }), 2000);
           }}
         >
           aaa
         </button>
-        <Notify2 state={notify2.getState} />
-      </div>
+       </div>
     </div>
   );
 }
 
-function Notify({ state }: { state: "busy" | "done" | "error" | null }) {
-  return (
-    <span className={`${styles[state || ""]}`}>
-      {!state && ""}
-      {state === "busy" && "loading..."}
-      {state === "done" && "ready..."}
-      {state === "error" && "error..."}
-    </span>
-  );
-}
-
-
-function Notify2({
+function Notify({
   state,
   className,
   style,
@@ -97,10 +71,7 @@ function Notify2({
 }) {
   if (!state) return null;
   return (
-    <span
-      className={`${styles[state.status] || ""} ${className || ""}`}
-      style={style}
-    >
+    <span className={`${styles[state.status] || ""} ${className || ""}`} style={style}>
       {state.message}
     </span>
   );

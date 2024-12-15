@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 import styles from "./page.module.css";
+import notifyStyles from "./notifyStyles.module.css";
 import Link from "next/link";
 import EmojiSpinnerButton from "./ButtonEmojiSpinner";
 import { useState } from "react";
@@ -63,7 +64,11 @@ export default function Home() {
         <button
           onClick={() => {
             notify.setBusy();
-            setTimeout(() => notify.setDone(), 2000);
+            notify2.setBusy();
+            setTimeout(() => {
+              notify.setDone();
+              notify2.setDone();
+            }, 2000);
           }}
         >
           aaa
@@ -85,20 +90,21 @@ function Notify({ state }: { state: "busy" | "done" | "error" | null }) {
   );
 }
 
-
 function Notify2({
   state,
   className,
   style,
+  stylesModule = notifyStyles,
 }: {
   state: { status: string; message?: string } | null;
   className?: string;
   style?: React.CSSProperties;
+  stylesModule?: { [key: string]: string };
 }) {
   if (!state) return null;
   return (
     <span
-      className={`${styles[state.status] || ""} ${className || ""}`}
+      className={`${stylesModule[state.status] || ""} ${className || ""}`}
       style={style}
     >
       {state.message}

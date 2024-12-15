@@ -1,0 +1,44 @@
+.emoji-spinner-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border: 2px solid #0056b3;
+  border-radius: 5px;
+  background-color: white;
+  color: #0056b3;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.emoji-spinner-button:disabled {
+  background-color: #0055af;
+  cursor: not-allowed;
+  color: white;
+}
+
+.emoji-spinner-button:hover:not(:disabled) {
+  background-color: #0056b3;
+  color: white;
+}
+
+.emoji-icon {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

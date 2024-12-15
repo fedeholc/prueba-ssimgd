@@ -65,6 +65,7 @@ function Notify({ state }: { state: "busy" | "done" | "error" | null }) {
       {!state && ""}
       {state === "busy" && "loading..."}
       {state === "done" && "ready..."}
+      {state === "error" && "error..."}
     </span>
   );
 }

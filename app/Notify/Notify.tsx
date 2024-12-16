@@ -97,16 +97,39 @@ export function useNotify3() {
     message?: string;
   } | null>(null);
 
-  const notify = {
-    setBusy: (message?: string) => setNotifyState({ status: "busy", message }),
-    setDone: (message?: string) => setNotifyState({ status: "done", message }),
-    setError: (message?: string) =>
-      setNotifyState({ status: "error", message }),
-    clear: () => setNotifyState(null),
-    setState: (state: { status: NotifyStatus; message?: string } | null) =>
-      setNotifyState(state),
-    getState: notifyState,
-  };
+  const setBusy = useCallback((message?: string) => {
+    setNotifyState({ status: "busy", message });
+  }, []);
 
-  return { notify };
+  const setDone = useCallback((message?: string) => {
+    setNotifyState({ status: "done", message });
+  }, []);
+
+  const setError = useCallback((message?: string) => {
+    setNotifyState({ status: "error", message });
+  }, []);
+
+  const setState = useCallback(
+    (state: { status: NotifyStatus; message?: string } | null) => {
+      setNotifyState(state);
+    },
+    []
+  );
+
+  const clear = useCallback(() => {
+    setNotifyState(null);
+  }, []);
+
+ 
+
+  const notify = useMemo(
+    () => ({
+      setBusy,
+      setDone,
+      setError,
+      clear,
+    }),
+    [setBusy, setDone, setError, clear]
+  );
+  return { notify, notifyState };
 }

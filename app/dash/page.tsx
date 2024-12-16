@@ -11,16 +11,12 @@ export default function Dash() {
   const [selecteditem, setSelectedItem] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
-  const { notify: notify3 } = useNotify3();
-
-  //TODO: el problema es que si uso notify en lugar de la ref, me pide que lo incluya en las dependencias y si lo incluyo re reanderiza constantemente
-  // tendría que ver porque pasa eso con el hook y no con el setLoading..
+  const { notify: notify3, notifyState } = useNotify3();
 
   useEffect(() => {
     async function fetchSourceListData() {
       setLoadingMessage("Loading sources...");
-      notify3.setBusy("ocupado");
-      
+      notify3.setBusy();
       const response = await fetch("/api/mongo/get-sources-list");
       if (!response.ok) {
         return;
@@ -37,7 +33,7 @@ export default function Dash() {
       notify3.clear();
     }
     fetchSourceListData();
-  }, []); // Sin dependencias
+  }, [notify3]); // Sin dependencias
 
   async function handleSelectionChange(selectedItem: string) {
     if (!selectedItem) {
@@ -70,7 +66,7 @@ export default function Dash() {
           <h2>Series</h2>
 
           {loadingMessage && <p>{loadingMessage}</p>}
-          <Notify3 state={notify3.getState} />
+          <Notify3 state={notifyState} />
           {sourceList?.length === 0 && !loadingMessage && (
             <p>No sources found</p>
           )}

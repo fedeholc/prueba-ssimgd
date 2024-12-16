@@ -1,7 +1,7 @@
 "use client";
 import styles from "./page.module.css";
 import SourcesList from "./SourcesList";
-import React, { useEffect, useState, useReducer, useRef } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
 import { Notify3, useNotify3 } from "../Notify/Notify";
@@ -11,29 +11,35 @@ export default function Dash() {
   const [selecteditem, setSelectedItem] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
 
-  const { notify: notify3, notifyState } = useNotify3();
+  const { notify, notifyState } = useNotify3();
 
   useEffect(() => {
     async function fetchSourceListData() {
       setLoadingMessage("Loading sources...");
-      notify3.setBusy();
-      const response = await fetch("/api/mongo/get-sources-list");
-      if (!response.ok) {
-        return;
+      notify.setBusy();
+      try {
+        const response = await fetch("/api/mongo/get-sources-list");
+        if (!response.ok) {
+          notify.setError(response.statusText);
+          return;
+        }
+        const data = await response.json();
+        if (!data) {
+          notify.setError("No data received");
+          return;
+        }
+        sourceListDispatch({ type: "load", payload: data });
+        if (data.length > 0) {
+          setSelectedItem(data[0]._id);
+        }
+        setLoadingMessage("");
+        notify.clear();
+      } catch (error: unknown) {
+        notify.setError(String(error));
       }
-      const data = await response.json();
-      if (!data) {
-        return;
-      }
-      sourceListDispatch({ type: "load", payload: data });
-      if (data.length > 0) {
-        setSelectedItem(data[0]._id);
-      }
-      setLoadingMessage("");
-      notify3.clear();
     }
     fetchSourceListData();
-  }, [notify3]); // Sin dependencias
+  }, [notify]);
 
   async function handleSelectionChange(selectedItem: string) {
     if (!selectedItem) {

@@ -115,21 +115,22 @@ export function useNotify3() {
     },
     []
   );
+ 
 
   const clear = useCallback(() => {
     setNotifyState(null);
   }, []);
-
- 
+  
 
   const notify = useMemo(
     () => ({
       setBusy,
       setDone,
       setError,
+      setState,
       clear,
     }),
-    [setBusy, setDone, setError, clear]
+    [setBusy, setDone, setError, clear, setState]
   );
   return { notify, notifyState };
 }

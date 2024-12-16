@@ -1,6 +1,9 @@
 import notifyStyles from "./notifyStyles.module.css";
 import { useState, useCallback, useMemo } from "react";
 
+// hay tre versiones de Notify, la primera es la menos customizable, la segunda la más, pero la tercera es mejor ya que permite customizar pero también tiene valores por defecto.
+// Los usecallback y usememo en la tercera están para evitar re-renders infinitos cuando se lo usa en un useEffect. 
+
 export function useNotify() {
   const [notifyState, setNotifyState] = useState<
     "busy" | "done" | "error" | null

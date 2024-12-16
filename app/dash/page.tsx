@@ -1,18 +1,26 @@
 "use client";
 import styles from "./page.module.css";
 import SourcesList from "./SourcesList";
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useRef } from "react";
 import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
+import { Notify3, useNotify3 } from "../Notify/Notify";
 
 export default function Dash() {
   const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
-  // loads the list of sources and selects the first one
+
+  const { notify: notify3 } = useNotify3();
+
+  //TODO: el problema es que si uso notify en lugar de la ref, me pide que lo incluya en las dependencias y si lo incluyo re reanderiza constantemente
+  // tendría que ver porque pasa eso con el hook y no con el setLoading..
+
   useEffect(() => {
     async function fetchSourceListData() {
       setLoadingMessage("Loading sources...");
+      notify3.setBusy("ocupado");
+      
       const response = await fetch("/api/mongo/get-sources-list");
       if (!response.ok) {
         return;
@@ -26,9 +34,10 @@ export default function Dash() {
         setSelectedItem(data[0]._id);
       }
       setLoadingMessage("");
+      notify3.clear();
     }
     fetchSourceListData();
-  }, []);
+  }, []); // Sin dependencias
 
   async function handleSelectionChange(selectedItem: string) {
     if (!selectedItem) {
@@ -61,6 +70,7 @@ export default function Dash() {
           <h2>Series</h2>
 
           {loadingMessage && <p>{loadingMessage}</p>}
+          <Notify3 state={notify3.getState} />
           {sourceList?.length === 0 && !loadingMessage && (
             <p>No sources found</p>
           )}

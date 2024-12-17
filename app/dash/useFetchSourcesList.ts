@@ -1,8 +1,8 @@
 
-import { useEffect, useReducer, useState } from "react";
-import sourcesListReducer from "./sourcesListReducer";
-export function useSourcesList() {
-  const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
+import { useState, useEffect } from "react";
+
+export function useFetchSourcesList(): { data: SourceListItem[]; isLoading: boolean; error: string | null } {
+  const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -10,7 +10,6 @@ export function useSourcesList() {
     async function fetchSourceListData() {
       try {
         setIsLoading(true);
-        console.log("date: ", new Date());
         const response = await fetch("/api/mongo/get-sources-list");
         if (!response.ok) {
           return;
@@ -19,8 +18,7 @@ export function useSourcesList() {
         if (!data) {
           return;
         }
-
-        sourceListDispatch({ type: "load", payload: data });
+        setData(data);
         setIsLoading(false);
       } catch (error: unknown) {
         console.error(error);
@@ -31,5 +29,5 @@ export function useSourcesList() {
     fetchSourceListData();
   }, []);
 
-  return { sourceList, sourceListDispatch, isLoading, error };
+  return { data, isLoading, error };
 }

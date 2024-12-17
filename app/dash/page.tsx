@@ -1,31 +1,17 @@
 "use client";
 import styles from "./page.module.css";
 import SourcesList from "./SourcesList";
-import { useReducer, useContext, useEffect, useState, use } from "react";
+import { useReducer, useEffect, useState } from "react";
 import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
 import { Notify3, useNotify3 } from "../Notify/Notify";
-import MyContext from "../context";
-import { useSourcesList } from "./useSourceList";
+import { useFetchSourcesList } from "./useFetchSourcesList";
 
 export default function Dash() {
-  //const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
-
-  const context = useContext(MyContext);
-  if (!context) {
-    throw new Error("MyContext must be used within a MyContext.Provider");
-  }
-  const { sourceList, sourceListDispatch, isLoading, error } = useSourcesList();
-
+  const { data: sourceListData, isLoading, error } = useFetchSourcesList();
+  const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
   const { notify, notifyState } = useNotify3();
-
-  // select first item in the list if none is selected (e.g. after loading)
-  useEffect(() => {
-    if (sourceList.length > 0 && !selecteditem) {
-      setSelectedItem(sourceList[0]._id);
-    }
-  }, [sourceList, selecteditem]);
 
   useEffect(() => {
     if (error) {
@@ -34,10 +20,19 @@ export default function Dash() {
     if (isLoading) {
       notify.setBusy();
     }
-    if (!isLoading) {
+    if (!isLoading && !error) {
       notify.clear();
     }
   }, [error, isLoading, notify]);
+
+  // Dispatch 'load' action when data changes
+  useEffect(() => {
+    if (sourceListData && sourceListData.length > 0) {
+      sourceListDispatch({ type: "load", payload: sourceListData });
+      // select first item in the list if none is selected (e.g. after loading)
+      setSelectedItem(sourceListData[0]._id);
+    }
+  }, [sourceListData, sourceListDispatch]);
 
   async function handleSelectionChange(selectedItem: string) {
     if (!selectedItem) {

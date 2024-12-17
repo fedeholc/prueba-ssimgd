@@ -4,18 +4,26 @@ import SourcesList from "./SourcesList";
 import { useReducer, useEffect, useState } from "react";
 import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
-import { Notify4 } from "../Notify/Notify";
+import { Notify3, useNotify3 } from "../Notify/Notify";
 import { useFetchSourcesList } from "./useFetchSourcesList";
 
 export default function Dash() {
-  const {
-    data: sourceListData,
-    isLoading,
-    done,
-    error,
-  } = useFetchSourcesList();
+  const { data: sourceListData, isLoading, error } = useFetchSourcesList();
   const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
+  const { notify, notifyState } = useNotify3();
+
+  useEffect(() => {
+    if (error) {
+      notify.setError(error);
+    }
+    if (isLoading) {
+      notify.setBusy();
+    }
+    if (!isLoading && !error) {
+      notify.clear();
+    }
+  }, [error, isLoading, notify]);
 
   // Dispatch 'load' action when data changes
   useEffect(() => {
@@ -57,12 +65,7 @@ export default function Dash() {
         <div>
           <h2>Series</h2>
 
-          <Notify4
-            isBusy={isLoading}
-            isError={error ? true : false}
-            isDone={done}
-            messages={{ busy: "ocupado", done: "listo" }}
-          />
+          <Notify3 state={notifyState} />
 
           {sourceList?.length > 0 && (
             <SourcesList

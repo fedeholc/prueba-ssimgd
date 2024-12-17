@@ -2,7 +2,7 @@ import notifyStyles from "./notifyStyles.module.css";
 import { useState, useCallback, useMemo } from "react";
 
 // hay tre versiones de Notify, la primera es la menos customizable, la segunda la más, pero la tercera es mejor ya que permite customizar pero también tiene valores por defecto.
-// Los usecallback y usememo en la tercera están para evitar re-renders infinitos cuando se lo usa en un useEffect. 
+// Los usecallback y usememo en la tercera están para evitar re-renders infinitos cuando se lo usa en un useEffect.
 
 export function useNotify() {
   const [notifyState, setNotifyState] = useState<
@@ -118,12 +118,10 @@ export function useNotify3() {
     },
     []
   );
- 
 
   const clear = useCallback(() => {
     setNotifyState(null);
   }, []);
-  
 
   const notify = useMemo(
     () => ({
@@ -136,4 +134,42 @@ export function useNotify3() {
     [setBusy, setDone, setError, clear, setState]
   );
   return { notify, notifyState };
+}
+
+export function Notify4({
+  className,
+  stylesModule = notifyStyles,
+  isBusy = false,
+  isError = false,
+  isDone = false,
+  messages = null,
+}: {
+  className?: string;
+  stylesModule?: { [key: string]: string };
+  isBusy?: boolean;
+  isError?: boolean;
+  isDone?: boolean;
+  messages?: { busy?: string; done?: string; error?: string } | null;
+}) {
+  let statusMessage;
+  let statusClass;
+
+  if (isBusy) {
+    statusMessage = messages?.busy || "loading...";
+    statusClass = "busy";
+  } else if (isError) {
+    statusMessage = messages?.error || "Error";
+    statusClass = "error";
+  } else if (isDone) {
+    statusMessage = messages?.done || "ready!";
+    statusClass = "done";
+  } else {
+    return null;
+  }
+
+  return (
+    <span className={`${stylesModule[statusClass] || ""} ${className || ""}`}>
+      {statusMessage}
+    </span>
+  );
 }

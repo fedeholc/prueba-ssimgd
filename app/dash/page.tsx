@@ -1,16 +1,18 @@
 "use client";
 import styles from "./page.module.css";
 import SourcesList from "./SourcesList";
-import React, { useEffect, useState, useReducer } from "react";
+import { useContext, useEffect, useState, useReducer } from "react";
 import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
 import { Notify3, useNotify3 } from "../Notify/Notify";
+import MyContext from "../context";
 
 export default function Dash() {
   const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
   const [loadingMessage, setLoadingMessage] = useState<string>("");
   const { notify, notifyState } = useNotify3();
+
 
   useEffect(() => {
     async function fetchSourceListData() {
@@ -64,36 +66,38 @@ export default function Dash() {
 
   return (
     <div>
-      <h1>Dashboard page</h1>
-      <button onClick={handleNewSource}>New source</button>
+      <MyContext.Provider value="holi">
+        <h1>Dashboard page</h1>
+        <button onClick={handleNewSource}>New source</button>
 
-      <div className={styles.grid}>
-        <div>
-          <h2>Series</h2>
+        <div className={styles.grid}>
+          <div>
+            <h2>Series</h2>
 
-          {loadingMessage && <p>{loadingMessage}</p>}
-          <Notify3 state={notifyState} />
-          {sourceList?.length === 0 && !loadingMessage && (
-            <p>No sources found</p>
-          )}
-          {sourceList?.length > 0 && (
-            <SourcesList
-              items={sourceList}
-              handleSelectionChange={handleSelectionChange}
+            {loadingMessage && <p>{loadingMessage}</p>}
+            <Notify3 state={notifyState} />
+            {sourceList?.length === 0 && !loadingMessage && (
+              <p>No sources found</p>
+            )}
+            {sourceList?.length > 0 && (
+              <SourcesList
+                items={sourceList}
+                handleSelectionChange={handleSelectionChange}
+                selectedItem={selecteditem}
+              />
+            )}
+          </div>
+          <div>
+            <h2>Selected item</h2>
+
+            <SelectedSource
               selectedItem={selecteditem}
+              sourceDispatch={sourceListDispatch}
+              setSelectedItem={setSelectedItem}
             />
-          )}
+          </div>
         </div>
-        <div>
-          <h2>Selected item</h2>
-
-          <SelectedSource
-            selectedItem={selecteditem}
-            sourceDispatch={sourceListDispatch}
-            setSelectedItem={setSelectedItem}
-          />
-        </div>
-      </div>
+      </MyContext.Provider>
     </div>
   );
 }

@@ -1,43 +1,45 @@
 "use client";
 import styles from "./page.module.css";
 import SourcesList from "./SourcesList";
-import { useReducer, useContext, useEffect, useState, use } from "react";
+import { useEffect, useState, useReducer } from "react";
 import SelectedSource from "./SelectedSource";
 import sourcesListReducer from "./sourcesListReducer";
 import { Notify3, useNotify3 } from "../Notify/Notify";
-import MyContext from "../context";
-import { useSourcesList } from "./useSourceList";
 
 export default function Dash() {
-  //const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
-
-  const context = useContext(MyContext);
-  if (!context) {
-    throw new Error("MyContext must be used within a MyContext.Provider");
-  }
-  const { sourceList, sourceListDispatch, isLoading, error } = useSourcesList();
+  const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
 
   const [selecteditem, setSelectedItem] = useState<string>("");
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   const { notify, notifyState } = useNotify3();
 
-  // select first item in the list if none is selected (e.g. after loading)
   useEffect(() => {
-    if (sourceList.length > 0 && !selecteditem) {
-      setSelectedItem(sourceList[0]._id);
-    }
-  }, [sourceList, selecteditem]);
-
-  useEffect(() => {
-    if (error) {
-      notify.setError(error);
-    }
-    if (isLoading) {
+    async function fetchSourceListData() {
+      setLoadingMessage("Loading sources...");
       notify.setBusy();
+      try {
+        const response = await fetch("/api/mongo/get-sources-list");
+        if (!response.ok) {
+          notify.setError(response.statusText);
+          return;
+        }
+        const data = await response.json();
+        if (!data) {
+          notify.setError("No data received");
+          return;
+        }
+        sourceListDispatch({ type: "load", payload: data });
+        if (data.length > 0) {
+          setSelectedItem(data[0]._id);
+        }
+        setLoadingMessage("");
+        notify.clear();
+      } catch (error: unknown) {
+        notify.setError(String(error));
+      }
     }
-    if (!isLoading) {
-      notify.clear();
-    }
-  }, [error, isLoading, notify]);
+    fetchSourceListData();
+  }, [notify]);
 
   async function handleSelectionChange(selectedItem: string) {
     if (!selectedItem) {
@@ -70,8 +72,11 @@ export default function Dash() {
         <div>
           <h2>Series</h2>
 
+          {loadingMessage && <p>{loadingMessage}</p>}
           <Notify3 state={notifyState} />
-
+          {sourceList?.length === 0 && !loadingMessage && (
+            <p>No sources found</p>
+          )}
           {sourceList?.length > 0 && (
             <SourcesList
               items={sourceList}

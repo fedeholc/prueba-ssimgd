@@ -1,8 +1,7 @@
 "use client";
+import { use, useEffect } from "react";
 import defaultStyles from "./SourcesList.module.css";
 export default SourcesList;
-import { useContext } from "react";
-import MyContext from "../context";
 
 interface SourcesListProps {
   items: SourceListItem[];
@@ -22,11 +21,12 @@ function SourcesList({
     return;
   }
 
-  const text = useContext(MyContext);
+  
 
+ 
   return (
     <div className={styles.list}>
-      {text}
+
       {items?.map((item, index) => (
         <div
           key={index}

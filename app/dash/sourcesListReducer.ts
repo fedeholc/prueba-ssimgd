@@ -4,6 +4,10 @@ export default function sourcesListReducer(
 ): SourceListItem[] {
   switch (action.type) {
     case "add":
+      //check if there is already a new source
+      if (state.find((source) => source._id === "0")) {
+        return state;
+      }
       return [action.payload, ...state];
     case "remove":
       return state.filter((source) => source._id !== action.payload);

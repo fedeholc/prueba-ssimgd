@@ -36,22 +36,27 @@ export default function SelectedSource({
       return;
     }
     async function fetchSourceData() {
-      const response = await fetch(
-        "http://localhost:3000/api/mongo/get-one-series-by-id",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ id: selectedItem }),
-        }
-      );
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/mongo/get-one-series-by-id",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: selectedItem }),
+          }
+        );
 
-      if (!response.ok) {
-        throw new Error("Error al obtener los datos");
+        if (!response.ok) {
+          throw new Error("Error al obtener los datos");
+        }
+        const responseData = await response.json();
+        sourceDispatch({ type: "load", payload: responseData });
+      } catch (error) {
+        console.error("Error fetching source data:", error);
+       // sourceDispatch({ type: "load", payload: {} });
       }
-      const responseData = await response.json();
-      sourceDispatch({ type: "load", payload: responseData });
     }
 
     // for new sources

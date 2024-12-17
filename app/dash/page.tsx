@@ -36,8 +36,8 @@ export default function Dash() {
   // adds a new source to the list, selects it
   // the new source is not saved to the database until the user clicks "Save"
   // the new source is identified by the _id "0"
-  //TODO: no permitir sumar uno nuevo si aun hay uno nuevo abierto sin guardar
   function handleNewSource() {
+    // the reducer will check if there is already a new source
     sourceListDispatch({
       type: "add",
       payload: {

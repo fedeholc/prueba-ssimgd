@@ -23,6 +23,7 @@ export default async function SourceItem({
   }
   const source = await response.json();
 
+  //TODO: acá irían el form de edición pero hay que ver cómo hacerlo con server actions, o con un componente client
   return (
     <>
       <div>Name: {source.name}</div>

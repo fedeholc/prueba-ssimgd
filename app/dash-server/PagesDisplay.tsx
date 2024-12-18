@@ -3,7 +3,7 @@
 export default function PagesDisplay({ pages }: { pages: Page[] }) {
   return (
     <div>
-      {pages.map((page, index) => (
+      {pages?.map((page, index) => (
         <details key={`${page.url}${index}`}>
           <summary>
             {page.url} - {page.images?.length || 0} images

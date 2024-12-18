@@ -1,3 +1,5 @@
+import PagesDisplay from "../../PagesDisplay";
+
 export default async function SourceItem({
   params,
 }: {
@@ -27,6 +29,7 @@ export default async function SourceItem({
       <div>URL: {source.url}</div>
 
       <div>Source Id: {source._id}</div>
+      <PagesDisplay pages={source.pages} />
     </>
   );
 }

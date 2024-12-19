@@ -21,9 +21,6 @@ export default async function SourceItem({
 
   const source: Source = JSON.parse(JSON.stringify(res)) as unknown as Source;
 
-  console.log("source", source);
-  //TODO: acá irían el form de edición pero hay que ver cómo hacerlo con server actions, o con un componente client
-
   return (
     <>
       <div>Name: {source.name}</div>

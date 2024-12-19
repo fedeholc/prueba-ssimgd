@@ -1,7 +1,7 @@
 "use client";
 import defaultStyles from "./SourcesList.module.css";
 export default SourcesList2;
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface SourcesListProps {
@@ -14,13 +14,19 @@ function SourcesList2({ items, styles = defaultStyles }: SourcesListProps) {
   function toggleItemSelection(item: string) {
     setSelectedItem(item);
     //go to item/id page
-
     router.push(`/dash-server/item/${item}`);
-
     return;
   }
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const [selectedItem, setSelectedItem] = useState<string | null>(
+    items[0]?._id
+  ); //poner en null si no se quiere iniciar con un item seleccionado
 
+  //para que seleccione el primer item cuando se cargue por primera vez
+  useEffect(() => {
+    if (selectedItem) {
+      router.push(`/dash-server/item/${selectedItem}`);
+    }
+  });
   return (
     <div className={styles.list}>
       {items?.map((item, index) => (

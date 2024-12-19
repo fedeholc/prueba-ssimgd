@@ -15,19 +15,19 @@ export default function Home() {
     <div className={styles.page}>
       <div>
         {" "}
-        Dashboard <Link href="/dash">Dash</Link>{" "}
-  
-        <EmojiSpinnerButton
-          emoji="🚀"
-          label="Launch"
-          loadingLabel="Launching..."
-          onClick={handleButtonClick}
-        />
+        Dashboard <Link href="/dash">Dash spa</Link>{" "}
       </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-         
- 
+      <div>
+        {" "}
+        Dashboard <Link href="/dash-server">Dash server components</Link>{" "}
       </div>
+      <div style={{ display: "flex", flexDirection: "row" }}></div>
+      <EmojiSpinnerButton
+        emoji="🚀"
+        label="Launch"
+        loadingLabel="Launching..."
+        onClick={handleButtonClick}
+      />
     </div>
   );
 }

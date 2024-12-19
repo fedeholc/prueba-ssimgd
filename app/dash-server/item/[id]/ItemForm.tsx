@@ -9,7 +9,7 @@ export default function ItemForm({ sourceItem }: { sourceItem: Source }) {
 
   return (
     <div>
-      <form >
+      <form>
         <label htmlFor="name">name:</label>
         <input
           type="text"
@@ -22,15 +22,16 @@ export default function ItemForm({ sourceItem }: { sourceItem: Source }) {
             })
           }
         />
-     
+
         <p>state: {saveState} </p>
         <button
-         onClick={async () => {
+          onClick={async (e) => {
+            e.preventDefault();
             setSaveState("pending");
             const result = await saveFormAction(source);
             console.log("result", result);
             setSaveState(result.acknowledged ? "ok" : "error");
-          }} 
+          }}
         >
           Save
         </button>

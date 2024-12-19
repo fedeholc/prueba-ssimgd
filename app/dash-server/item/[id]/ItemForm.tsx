@@ -1,35 +1,40 @@
 "use client";
 import { useState } from "react";
-import { saveForm } from "./saveForm";
+import { saveFormAction } from "./saveFormAction";
+
 export default function ItemForm({ sourceItem }: { sourceItem: Source }) {
   const [source, setSource] = useState<Source>(sourceItem);
 
+  const [saveState, setSaveState] = useState("initial");
+
   return (
     <div>
-      <input
-        type="text"
-        value={source.name}
-        onChange={(e) =>
-          setSource({
-            ...source,
-            name: e.target.value,
-          })
-        }
-        /* onChange={(e) =>
-          sourceDispatch({
-            type: "update",
-            payload: { ...source, name: e.target.value },
-          })
-        } */
-      />
-      <button
-        onClick={async () => {
-          const result = await saveForm(source);
-          console.log("result", result);
-        }}
-      >
-        Save
-      </button>
+      <form >
+        <label htmlFor="name">name:</label>
+        <input
+          type="text"
+          name="name"
+          value={source.name}
+          onChange={(e) =>
+            setSource({
+              ...source,
+              name: e.target.value,
+            })
+          }
+        />
+     
+        <p>state: {saveState} </p>
+        <button
+         onClick={async () => {
+            setSaveState("pending");
+            const result = await saveFormAction(source);
+            console.log("result", result);
+            setSaveState(result.acknowledged ? "ok" : "error");
+          }} 
+        >
+          Save
+        </button>
+      </form>
     </div>
   );
 }

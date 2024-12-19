@@ -2,6 +2,7 @@ import PagesDisplay from "../../PagesDisplay";
 import { ObjectId } from "mongodb";
 import { getDatabase } from "../../../lib/mongodb";
 import ItemForm from "./ItemForm";
+import ItemForm2 from "./ItemForm2";
 
 export default async function SourceItem({
   params,
@@ -10,28 +11,10 @@ export default async function SourceItem({
 }) {
   const { id } = await params;
 
-/*   const response = await fetch(
-    "http://localhost:3000/api/mongo/get-one-series-by-id",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: id }),
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Error al obtener los datos");
-  } */
-
-  //const source = await response.json();
-
   const database = await getDatabase();
   const coll = database.collection("series");
   const res = await coll.findOne({ _id: ObjectId.createFromHexString(id) });
 
-  
   if (!res) {
     throw new Error("No se encontró la serie");
   }
@@ -48,10 +31,11 @@ export default async function SourceItem({
 
       <div>Source Id: {source._id}</div>
 
-
       <ItemForm sourceItem={source} />
+      <p>otro:</p>
+      <ItemForm2 sourceItem={source} />
+
       <PagesDisplay pages={source.pages} />
     </>
   );
- 
 }

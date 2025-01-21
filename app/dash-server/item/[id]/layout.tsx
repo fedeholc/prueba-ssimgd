@@ -1,8 +1,8 @@
-import { ContextProvider } from "../context";
-import styles from "./page.module.css";
-import SourcesList2 from "./SourcesList2";
+import { ContextProvider } from "../../../context";
+import styles from "../../page.module.css";
+import SourcesList2 from "../../SourcesList2";
 
-export default async function Dash({
+export default async function DashLayout({
   children,
   params,
 }: {
@@ -10,7 +10,6 @@ export default async function Dash({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  console.log("*********************** id", id);
   const response = await fetch(
     "http://localhost:3000/api/mongo/get-sources-list"
   );
@@ -33,7 +32,9 @@ export default async function Dash({
               isDone={done}
               messages={{ busy: "ocupado", done: "listo" }}
             /> */}
-            {sourceList?.length > 0 && <SourcesList2 items={sourceList} />}
+            {sourceList?.length > 0 && (
+              <SourcesList2 items={sourceList} selectedId={id} />
+            )}
           </div>
           <div>
             <h2>Selected item</h2>

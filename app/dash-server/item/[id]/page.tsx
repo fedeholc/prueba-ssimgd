@@ -7,7 +7,7 @@ import ItemForm2 from "./ItemForm2";
 export default async function SourceItem({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
 

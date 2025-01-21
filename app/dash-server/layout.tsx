@@ -4,11 +4,13 @@ import SourcesList2 from "./SourcesList2";
 
 export default async function DashLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   const response = await fetch(
     "http://localhost:3000/api/mongo/get-sources-list"
   );
-  console.log(response);
+
   if (!response.ok) {
     return;
   }
@@ -32,7 +34,6 @@ export default async function DashLayout({
           <div>
             <h2>Selected item</h2>
             {children}
-
           </div>
         </div>
       </ContextProvider>

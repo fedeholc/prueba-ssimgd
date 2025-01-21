@@ -19,7 +19,7 @@ export default async function SourceItem({
     throw new Error("No se encontró la serie");
   }
 
-  const source: Source = JSON.parse(JSON.stringify(res)) as unknown as Source;
+  const source: Source = JSON.parse(JSON.stringify(res)) as Source;
 
   return (
     <>

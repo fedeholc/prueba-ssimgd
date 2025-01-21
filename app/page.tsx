@@ -2,15 +2,8 @@
 "use client";
 import styles from "./page.module.css";
 import Link from "next/link";
-import EmojiSpinnerButton from "./ButtonEmojiSpinner";
- 
-export default function Home() {
-  const handleButtonClick = async (): Promise<void> => {
-    // Simula una acción asíncrona
-    return new Promise((resolve) => setTimeout(resolve, 2000));
-  };
 
- 
+export default function Home() {
   return (
     <div className={styles.page}>
       <div>
@@ -22,12 +15,6 @@ export default function Home() {
         Dashboard <Link href="/dash-server">Dash server components</Link>{" "}
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}></div>
-      <EmojiSpinnerButton
-        emoji="🚀"
-        label="Launch"
-        loadingLabel="Launching..."
-        onClick={handleButtonClick}
-      />
     </div>
   );
 }

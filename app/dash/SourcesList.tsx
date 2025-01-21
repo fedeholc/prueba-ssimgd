@@ -1,5 +1,4 @@
 "use client";
-import { use, useEffect } from "react";
 import defaultStyles from "./SourcesList.module.css";
 export default SourcesList;
 
@@ -12,7 +11,7 @@ interface SourcesListProps {
 
 function SourcesList({
   items,
-  handleSelectionChange: handleSelectionChange,
+  handleSelectionChange,
   styles = defaultStyles,
   selectedItem,
 }: SourcesListProps) {
@@ -20,9 +19,6 @@ function SourcesList({
     handleSelectionChange(item);
     return;
   }
-
-  
-
  
   return (
     <div className={styles.list}>

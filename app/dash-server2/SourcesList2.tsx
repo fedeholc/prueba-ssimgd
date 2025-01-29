@@ -3,7 +3,6 @@ import defaultStyles from "./SourcesList.module.css";
 export default SourcesList2;
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSelectedLayoutSegment } from "next/navigation";
 
 interface SourcesListProps {
   items: SourceListItem[];
@@ -17,38 +16,31 @@ function SourcesList2({
   selectedId,
 }: SourcesListProps) {
   const router = useRouter();
-
   function toggleItemSelection(item: string) {
     setSelectedItem(item);
     //go to item/id page
-    router.push(`/dash-server/item/${item}`);
+    router.push(`/dash-server2/item/${item}`);
     return;
   }
 
-  const segment = useSelectedLayoutSegment();
-
-  //TODO: puedo pasar segment si no hay selectedId??
   const [selectedItem, setSelectedItem] = useState<string | null>(
     selectedId ? selectedId : null
   );
 
   return (
-    <div>
-      Segment: {segment}
-      <div className={styles.list}>
-        {items?.map((item, index) => (
-          <div
-            key={index}
-            onClick={() => toggleItemSelection(item._id!)}
-            className={`${styles.item} ${
-              selectedItem === item._id ? styles.selected : styles.notSelected
-            }
-              `}
-          >
-            {item.name}
-          </div>
-        ))}
-      </div>
+    <div className={styles.list}>
+      {items?.map((item, index) => (
+        <div
+          key={index}
+          onClick={() => toggleItemSelection(item._id!)}
+          className={`${styles.item} ${
+            selectedItem === item._id ? styles.selected : styles.notSelected
+          }
+            `}
+        >
+          {item.name}
+        </div>
+      ))}
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import { ContextProvider } from "../../../context";
-import styles from "../../page.module.css";
-import SourcesList2 from "../../SourcesList2";
+import { ContextProvider } from "../../context";
+import styles from "../page.module.css";
+import SourcesList2 from "../SourcesList2";
 
 export default async function DashLayout({
   children,
@@ -21,7 +21,7 @@ export default async function DashLayout({
   return (
     <div>
       <ContextProvider>
-        <h1>Dashboard Layout</h1>
+        <div>dash/item/ Layout</div>
 
         <div className={styles.grid}>
           <div>

@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import { getDatabase } from "../../../lib/mongodb";
 import ItemForm from "./ItemForm";
 import ItemForm2 from "./ItemForm2";
+import DeleteItemButton from "../new/DeleteItemButton";
 
 export default async function SourceItem({
   params,
@@ -13,10 +14,15 @@ export default async function SourceItem({
 
   const database = await getDatabase();
   const coll = database.collection("series");
+
+  //check if id is valid
+  if (!ObjectId.isValid(id)) {
+    return <div>Invalid source id</div>;
+  }
   const res = await coll.findOne({ _id: ObjectId.createFromHexString(id) });
 
   if (!res) {
-    throw new Error("No se encontró la serie");
+    return <div>Source not found</div>;
   }
 
   const source: Source = JSON.parse(JSON.stringify(res)) as Source;
@@ -24,6 +30,7 @@ export default async function SourceItem({
   return (
     <>
       <h3>item/id/page</h3>
+      <DeleteItemButton sourceId={source._id} />
       <div>Name: {source.name}</div>
       <div>URL: {source.url}</div>
 

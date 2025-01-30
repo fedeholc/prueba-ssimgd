@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import { revalidatePath } from 'next/cache'
 
 
-export async function saveFormAction2(prevState: any, form: FormData) {
+export async function saveFormAction2(prevState: unknown, form: FormData) {
 
   console.log("saveFormAction", form);
 

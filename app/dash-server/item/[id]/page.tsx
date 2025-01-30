@@ -11,9 +11,6 @@ export default async function SourceItem({
 }) {
   const { id } = await params;
 
-  if (id==="0") {
-    return <div>no id</div>;
-  }
   const database = await getDatabase();
   const coll = database.collection("series");
   const res = await coll.findOne({ _id: ObjectId.createFromHexString(id) });

@@ -5,7 +5,7 @@ import { useReducer, useEffect } from "react";
 import sourcesListReducer from "./dash/sourcesListReducer";
 
 const MyContext = createContext<{
-  sourceList: SourceListItem[];
+  sourceList: SourceId[];
 
   sourceListDispatch: Dispatch<SourceListAction>;
 } | null>(null);
@@ -33,7 +33,7 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <MyContext.Provider value={{sourceList, sourceListDispatch}}>
+    <MyContext.Provider value={{ sourceList, sourceListDispatch }}>
       {children}
     </MyContext.Provider>
   );

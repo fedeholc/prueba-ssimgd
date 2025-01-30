@@ -3,7 +3,7 @@ import defaultStyles from "./SourcesList.module.css";
 export default SourcesList;
 
 interface SourcesListProps {
-  items: SourceListItem[];
+  items: SourceId[];
   handleSelectionChange: (selectedItems: string) => void;
   styles?: { [key: string]: string };
   selectedItem: string | null;
@@ -19,10 +19,9 @@ function SourcesList({
     handleSelectionChange(item);
     return;
   }
- 
+
   return (
     <div className={styles.list}>
-
       {items?.map((item, index) => (
         <div
           key={index}

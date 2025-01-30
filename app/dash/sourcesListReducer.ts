@@ -1,7 +1,7 @@
 export default function sourcesListReducer(
-  state: SourceListItem[],
+  state: SourceId[],
   action: SourceListAction
-): SourceListItem[] {
+): SourceId[] {
   switch (action.type) {
     case "add":
       //check if there is already a new source

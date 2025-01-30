@@ -8,7 +8,7 @@ const endPoints = {
   updateSource: "/api/mongo/update-source",
 };
 
-export default function SelectedSource({
+export default function Source({
   selectedItem,
   sourceDispatch: sourcesDispatch,
   setSelectedItem,
@@ -55,7 +55,7 @@ export default function SelectedSource({
         sourceDispatch({ type: "load", payload: responseData });
       } catch (error) {
         console.error("Error fetching source data:", error);
-       // sourceDispatch({ type: "load", payload: {} });
+        // sourceDispatch({ type: "load", payload: {} });
       }
     }
 
@@ -83,6 +83,7 @@ export default function SelectedSource({
     sourceDispatch({ type: "reset-pages" });
     setLoadingImagesMessage("Cargando páginas...");
 
+    console.log("> > > handleGetData");
     try {
       const sanitizedUrl =
         source.url.startsWith("http://") || source.url.startsWith("https://")
@@ -104,6 +105,7 @@ export default function SelectedSource({
         setLoadingImagesMessage(`Loading page...(${count}/${pages.length})`);
         try {
           const imgUrls: string[] = await getImages(endPoints.getImages, page);
+
           sourceDispatch({
             type: "add",
             payload: { url: page, images: imgUrls },
@@ -245,7 +247,9 @@ export default function SelectedSource({
             Save Source {loadingSourceMessage}
           </button>
           <button
-            onClick={handleGetData}
+            onClick={() => {
+              handleGetData();
+            }}
             disabled={isLoadingImages || !source.url}
           >
             {isLoadingImages ? loadingImagesMessage : "Download Data"}

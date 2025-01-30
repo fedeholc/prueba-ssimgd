@@ -2,7 +2,7 @@
 import styles from "./page.module.css";
 import SourcesList from "./SourcesList";
 import { useReducer, useEffect, useState } from "react";
-import SelectedSource from "./SelectedSource";
+import Source from "./Source";
 import sourcesListReducer from "./sourcesListReducer";
 import { Notify4 } from "../Notify/Notify";
 import { useFetchSourcesList } from "./useFetchSourcesList";
@@ -75,7 +75,7 @@ export default function Dash() {
         <div>
           <h2>Selected item</h2>
 
-          <SelectedSource
+          <Source
             selectedItem={selecteditem}
             sourceDispatch={sourceListDispatch}
             setSelectedItem={setSelectedItem}

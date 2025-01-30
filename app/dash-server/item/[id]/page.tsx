@@ -5,7 +5,7 @@ import ItemForm from "./ItemForm";
 import ItemForm2 from "./ItemForm2";
 import DeleteItemButton from "../new/DeleteItemButton";
 
-export default async function SourceItem({
+export default async function Source({
   params,
 }: {
   params: Promise<{ id: string }>;

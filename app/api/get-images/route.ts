@@ -1,8 +1,10 @@
 import { JSDOM } from "jsdom";
 
 
+//TODO: hay páginas que estan protegidas por ejemplo por cloudflare y no se pueden scrapear de este modo (ej: https://www.smn.gob.ar/). Pero podría hacerlo usando playwright
 async function getImagesUrls(sourceUrl: string): Promise<string[] | undefined> {
   try {
+
     const response = await fetch(sourceUrl);
     const html = await response.text();
 
@@ -17,8 +19,13 @@ async function getImagesUrls(sourceUrl: string): Promise<string[] | undefined> {
       if (src) {
         if (src && !src.startsWith("http")) {
           const url = new URL(sourceUrl);
-          const link = url.origin + src;
-          uniqueImgUrls.add(link);
+          if (src.startsWith("/")) {
+            const link = url.origin + src;
+            uniqueImgUrls.add(link);
+          } else {
+            const link = url.origin + "/" + src;
+            uniqueImgUrls.add(link);
+          }
         } else {
           uniqueImgUrls.add(src);
         }

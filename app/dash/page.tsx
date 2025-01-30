@@ -1,20 +1,15 @@
 "use client";
 import styles from "./page.module.css";
-import SourcesList from "./SourcesList";
+import SourceList from "./SourceList";
 import { useReducer, useEffect, useState } from "react";
 import Source from "./Source";
-import sourcesListReducer from "./sourcesListReducer";
+import sourceListReducer from "./sourceListReducer";
 import { Notify4 } from "../Notify/Notify";
-import { useFetchSourcesList } from "./useFetchSourcesList";
+import { useFetchSourceList } from "./useFetchSourceList";
 
 export default function Dash() {
-  const {
-    data: sourceListData,
-    isLoading,
-    done,
-    error,
-  } = useFetchSourcesList();
-  const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
+  const { data: sourceListData, isLoading, done, error } = useFetchSourceList();
+  const [sourceList, sourceListDispatch] = useReducer(sourceListReducer, []);
   const [selecteditem, setSelectedItem] = useState<string>("");
 
   // Dispatch 'load' action when data changes
@@ -65,7 +60,7 @@ export default function Dash() {
           />
 
           {sourceList?.length > 0 && (
-            <SourcesList
+            <SourceList
               items={sourceList}
               handleSelectionChange={handleSelectionChange}
               selectedItem={selecteditem}

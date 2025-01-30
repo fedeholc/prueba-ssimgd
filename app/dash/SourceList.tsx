@@ -1,20 +1,20 @@
 "use client";
-import defaultStyles from "./SourcesList.module.css";
-export default SourcesList;
+import defaultStyles from "./SourceList.module.css";
+export default SourceList;
 
-interface SourcesListProps {
+interface SourceListProps {
   items: SourceListItem[];
   handleSelectionChange: (selectedItems: string) => void;
   styles?: { [key: string]: string };
   selectedItem: string | null;
 }
 
-function SourcesList({
+function SourceList({
   items,
   handleSelectionChange,
   styles = defaultStyles,
   selectedItem,
-}: SourcesListProps) {
+}: SourceListProps) {
   function toggleItemSelection(item: string) {
     handleSelectionChange(item);
     return;

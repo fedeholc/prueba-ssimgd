@@ -1,21 +1,21 @@
 "use client";
-import defaultStyles from "./SourcesList.module.css";
-export default SourcesList2;
+import defaultStyles from "./SourceList.module.css";
+export default SourceList;
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelectedLayoutSegment } from "next/navigation";
 
-interface SourcesListProps {
+interface SourceListProps {
   items: SourceListItem[];
   styles?: { [key: string]: string };
   selectedId?: string;
 }
 
-function SourcesList2({
+function SourceList({
   items,
   styles = defaultStyles,
   selectedId,
-}: SourcesListProps) {
+}: SourceListProps) {
   const router = useRouter();
 
   function toggleItemSelection(item: string) {

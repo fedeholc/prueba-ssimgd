@@ -1,4 +1,4 @@
-import PagesDisplay from "../../PagesDisplay";
+import SourcePages from "../../SourcePages";
 import { ObjectId } from "mongodb";
 import { getDatabase } from "../../../lib/mongodb";
 import ItemForm from "./ItemForm";
@@ -40,7 +40,7 @@ export default async function Source({
       <p>otro:</p>
       <ItemForm2 sourceItem={source} />
 
-      <PagesDisplay pages={source.pages} />
+      <SourcePages pages={source.pages} />
     </>
   );
 }

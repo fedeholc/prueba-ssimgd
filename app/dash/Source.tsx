@@ -1,4 +1,4 @@
-import PagesDisplay from "./PagesDisplay";
+import SourcePages from "./SourcePages";
 import React, { useEffect, useState, useReducer } from "react";
 import { getImages, getSubPages } from "./utils";
 const endPoints = {
@@ -254,7 +254,7 @@ export default function Source({
           >
             {isLoadingImages ? loadingImagesMessage : "Download Data"}
           </button>
-          <PagesDisplay pages={source.pages || []} />
+          <SourcePages pages={source.pages || []} />
         </div>
       )}
     </div>

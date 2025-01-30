@@ -1,6 +1,6 @@
 import { ContextProvider } from "../../context";
 import styles from "../page.module.css";
-import SourcesList2 from "../SourcesList2";
+import SourceList from "../SourceList";
 import NewSourceButton from "./NewSourceButton";
 
 export default async function DashLayout({
@@ -39,7 +39,7 @@ export default async function DashLayout({
               messages={{ busy: "ocupado", done: "listo" }}
             /> */}
             {sourceList?.length > 0 && (
-              <SourcesList2 items={sourceList} selectedId={id} />
+              <SourceList items={sourceList} selectedId={id} />
             )}
           </div>
           <div>

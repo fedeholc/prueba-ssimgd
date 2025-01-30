@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 
-export default function PagesDisplay({ pages }: { pages: Page[] }) {
+export default function SourcePages({ pages }: { pages: Page[] }) {
   return (
     <div>
       {pages.map((page, index) => (

@@ -2,7 +2,7 @@
 
 import { createContext, Dispatch } from "react";
 import { useReducer, useEffect } from "react";
-import sourcesListReducer from "./dash/sourcesListReducer";
+import sourceListReducer from "./dash/sourceListReducer";
 
 const MyContext = createContext<{
   sourceList: SourceId[];
@@ -13,7 +13,7 @@ const MyContext = createContext<{
 export default MyContext;
 
 export function ContextProvider({ children }: { children: React.ReactNode }) {
-  const [sourceList, sourceListDispatch] = useReducer(sourcesListReducer, []);
+  const [sourceList, sourceListDispatch] = useReducer(sourceListReducer, []);
 
   useEffect(() => {
     async function fetchSourceListData() {

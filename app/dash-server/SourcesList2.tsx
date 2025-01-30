@@ -28,8 +28,9 @@ function SourcesList2({
   const segment = useSelectedLayoutSegment();
 
   //TODO: puedo pasar segment si no hay selectedId??
+  console.log("selected ", selectedId, "segment", segment);
   const [selectedItem, setSelectedItem] = useState<string | null>(
-    selectedId ? selectedId : null
+    selectedId ? selectedId : segment || null
   );
 
   return (

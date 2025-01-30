@@ -3,7 +3,7 @@ import defaultStyles from "./SourcesList.module.css";
 export default SourcesList;
 
 interface SourcesListProps {
-  items: SourceId[];
+  items: SourceListItem[];
   handleSelectionChange: (selectedItems: string) => void;
   styles?: { [key: string]: string };
   selectedItem: string | null;

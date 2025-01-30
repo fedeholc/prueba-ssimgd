@@ -1,12 +1,11 @@
-type webSerie = {
+export type webSerie = {
   name: string;
   url: string;
-  subpages: {
+  subpages: object;
 
-  }
 }
 
-const temp1 = {
+export const temp1 = {
   name: "bla",
   url: "https://www.bla.com",
   subpages: {
@@ -16,7 +15,7 @@ const temp1 = {
   }
 }
 
-const temp2 = {
+export const temp2 = {
   name: "bla",
   url: "https://www.bla.com",
   pages: [

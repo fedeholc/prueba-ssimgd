@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 
-export function useFetchSourcesList(): { data: SourceId[]; isLoading: boolean; done: boolean; error: string | null } {
+export function useFetchSourcesList(): { data: SourceListItem[]; isLoading: boolean; done: boolean; error: string | null } {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [done, setDone] = useState<boolean>(false);

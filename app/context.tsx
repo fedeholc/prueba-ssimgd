@@ -27,7 +27,9 @@ export function ContextProvider({ children }: { children: React.ReactNode }) {
           return;
         }
         sourceListDispatch({ type: "load", payload: data });
-      } catch (error: unknown) {}
+      } catch (error: unknown) {
+        console.error(error);
+      }
     }
     fetchSourceListData();
   }, []);

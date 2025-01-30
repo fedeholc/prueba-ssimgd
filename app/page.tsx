@@ -12,7 +12,7 @@ export default function Home() {
       </div>
       <div>
         {" "}
-        Dashboard <Link href="/dash-server">Dash server components</Link>{" "}
+        Dashboard <Link href="/dash-server/item">Dash server components</Link>{" "}
       </div>
       <div style={{ display: "flex", flexDirection: "row" }}></div>
     </div>

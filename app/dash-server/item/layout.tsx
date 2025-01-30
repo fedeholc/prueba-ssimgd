@@ -1,6 +1,7 @@
 import { ContextProvider } from "../../context";
 import styles from "../page.module.css";
 import SourcesList2 from "../SourcesList2";
+import NewSourceButton from "./NewSourceButton";
 
 export default async function DashLayout({
   children,
@@ -10,6 +11,8 @@ export default async function DashLayout({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  //TODO: podría no usar la api y hacer directanente la consulta a la base
   const response = await fetch(
     "http://localhost:3000/api/mongo/get-sources-list"
   );
@@ -17,12 +20,14 @@ export default async function DashLayout({
   if (!response.ok) {
     return;
   }
-  const sourceList = await response.json();
+  let sourceList: Source[] = await response.json();
+  sourceList = sourceList.toReversed();
 
   return (
     <div>
       <ContextProvider>
         <div>dash/item/ Layout</div>
+        <NewSourceButton />
 
         <div className={styles.grid}>
           <div>

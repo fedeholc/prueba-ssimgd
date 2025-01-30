@@ -4,7 +4,7 @@ export default SourcesList2;
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelectedLayoutSegment } from "next/navigation";
-
+ 
 interface SourcesListProps {
   items: SourceListItem[];
   styles?: { [key: string]: string };
@@ -27,7 +27,6 @@ function SourcesList2({
 
   const segment = useSelectedLayoutSegment();
 
-  //TODO: puedo pasar segment si no hay selectedId??
   console.log("selected ", selectedId, "segment", segment);
   const [selectedItem, setSelectedItem] = useState<string | null>(
     selectedId ? selectedId : segment || null
@@ -36,6 +35,7 @@ function SourcesList2({
   return (
     <div>
       Segment: {segment}
+    
       <div className={styles.list}>
         {items?.map((item, index) => (
           <div

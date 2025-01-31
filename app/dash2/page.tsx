@@ -19,14 +19,13 @@ export default function Dash() {
     if (sourceListData && sourceListData.length > 0) {
       //sourceListDispatch({ type: "load", payload: sourceListData });
       if (sourceList.length === 0) {
-
-      
-      sourceListAction.load(sourceListData);
+        sourceListAction.load(sourceListData);
+        // select first item in the list if none is selected (e.g. after loading)
+        setSelectedItem(sourceListData[0]._id);
       }
-      // select first item in the list if none is selected (e.g. after loading)
-      //setSelectedItem(sourceListData[0]._id);
+      //
     }
-  },[sourceList,sourceListData, sourceListAction]);
+  }, [sourceList, sourceListData, sourceListAction]);
 
   /* useEffect(() => {
     console.log("page use ", selecteditem, sourceList);
@@ -83,11 +82,11 @@ export default function Dash() {
         <div>
           <h2>Selected item</h2>
 
-       <Source
+          <Source
             selectedItem={selecteditem}
             sourceListAction={sourceListAction}
             setSelectedItem={setSelectedItem}
-          /> 
+          />
         </div>
       </div>
     </div>

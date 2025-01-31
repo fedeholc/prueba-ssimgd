@@ -1,10 +1,10 @@
 
 import { useState, useEffect } from "react";
 
-export function useFetchSourceList(): { data: SourceListItem[]; isLoading: boolean; done: boolean; error: string | null } {
+export function useFetchSourceList(): { data: SourceListItem[]; isLoading: boolean; isDone: boolean; error: string | null } {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [done, setDone] = useState<boolean>(false);
+  const [isDone, setIsDone] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -21,7 +21,7 @@ export function useFetchSourceList(): { data: SourceListItem[]; isLoading: boole
         }
         setData(data);
         setIsLoading(false);
-        setDone(true);
+        setIsDone(true);
       } catch (error: unknown) {
         console.error(error);
         setError(String(error));
@@ -31,5 +31,5 @@ export function useFetchSourceList(): { data: SourceListItem[]; isLoading: boole
     fetchSourceListData();
   }, []);
 
-  return { data, isLoading, done, error };
+  return { data, isLoading, isDone, error };
 }

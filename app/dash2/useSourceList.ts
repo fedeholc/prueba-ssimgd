@@ -1,8 +1,17 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import sourceListReducer from './sourceListReducer';
+import { useFetchSourceList } from './useFetchSourceList';
 
-export function useSourceListReducer() {
-  const [sourceList, dispatch] = useReducer(sourceListReducer, []);
+export function useSourceList() {
+  const { data: sourceListData, isLoading, isDone, error  } = useFetchSourceList();
+  const [sourceList, dispatch] = useReducer(sourceListReducer, sourceListData);
+
+  useEffect(() => {
+    if (sourceListData && sourceListData.length > 0) {
+      dispatch({ type: 'load', payload: sourceListData });
+    }
+  }, [sourceListData]);
+    
 
   const actions: SourceListReducerActions = {
     load: (sources: SourceListItem[]) => {
@@ -21,6 +30,6 @@ export function useSourceListReducer() {
 
   return {
     sourceList,
-    actions
+    actions, isLoading, isDone, error
   };
 }

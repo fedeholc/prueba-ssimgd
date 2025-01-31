@@ -8,7 +8,7 @@ export default function Home() {
     <div className={styles.page}>
       <div>
         {" "}
-        Dashboard <Link href="/dash">Dash spa</Link>{" "}
+        Dashboard <Link href="/dash-spa">Dash spa</Link>{" "}
       </div>
       <div>
         {" "}

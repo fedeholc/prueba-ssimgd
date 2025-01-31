@@ -44,7 +44,7 @@ function SourceList({
             }
               `}
           >
-            {item.name as unknown as string}
+            {item.name}
           </div>
         ))}
       </div>

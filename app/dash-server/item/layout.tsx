@@ -1,7 +1,7 @@
-import { ContextProvider } from "../../context";
 import styles from "../page.module.css";
 import SourceList from "../SourceList";
 import NewSourceButton from "./NewSourceButton";
+import { getDatabase } from "@/app/lib/mongodb";
 
 export default async function DashLayout({
   children,
@@ -12,42 +12,40 @@ export default async function DashLayout({
 }) {
   const { id } = await params;
 
-  //TODO: podría no usar la api y hacer directanente la consulta a la base
-  const response = await fetch(
-    "http://localhost:3000/api/mongo/get-sources-list"
-  );
+  const database = await getDatabase();
+  const coll = database.collection("series");
+  const cursor = coll.find({}, { projection: { _id: 1, name: 1 } });
+  const response = await cursor.toArray();
 
-  if (!response.ok) {
+  if (!response) {
     return;
   }
-  let sourceList: Source[] = await response.json();
+  let sourceList: SourceListItem[] = JSON.parse(JSON.stringify(response));
   sourceList = sourceList.toReversed();
 
   return (
     <div>
-      <ContextProvider>
-        <div>dash/item/ Layout</div>
-        <NewSourceButton />
+      <div>dash/item/ Layout</div>
+      <NewSourceButton />
 
-        <div className={styles.grid}>
-          <div>
-            <h2>Series</h2>
-            {/* <Notify4
+      <div className={styles.grid}>
+        <div>
+          <h2>Series</h2>
+          {/* <Notify4
               isBusy={isLoading}
               isError={error ? true : false}
               isDone={done}
               messages={{ busy: "ocupado", done: "listo" }}
             /> */}
-            {sourceList?.length > 0 && (
-              <SourceList items={sourceList} selectedId={id} />
-            )}
-          </div>
-          <div>
-            <h2>Selected item</h2>
-            {children}
-          </div>
+          {sourceList?.length > 0 && (
+            <SourceList items={sourceList} selectedId={id} />
+          )}
         </div>
-      </ContextProvider>
+        <div>
+          <h2>Selected item</h2>
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

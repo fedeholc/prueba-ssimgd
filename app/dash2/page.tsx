@@ -10,14 +10,15 @@ import { useSourceListReducer } from "./useSourceListReducer";
 
 export default function Dash() {
   const { data: sourceListData, isLoading, done, error } = useFetchSourceList();
-  //const [sourceList, sourceListDispatch] = useReducer(sourceListReducer, []);
+
   const { sourceList, actions: sourceListAction } = useSourceListReducer();
   const [selecteditem, setSelectedItem] = useState<string>("");
 
   // Dispatch 'load' action when data changes
   useEffect(() => {
+    //VER: ojo, por un lado el load lo tuve que poner para que cargue la lista en el reducer, pero por otro lado en los siguientes renders me volvia a cargar la lista original cuando la modificaba por ejemplo al agregar un nuevo item, por eso ahora checkea si la lista esta vacia antes de cargarla. Eso con la otra implementación del reducer sin hook no pasaba.
+    //TODO: habría que probar que pasa si en el hook del reducer se hacer la carga de datos y no tenerlo separado, o sino también probar si funciona con un context.
     if (sourceListData && sourceListData.length > 0) {
-      //sourceListDispatch({ type: "load", payload: sourceListData });
       if (sourceList.length === 0) {
         sourceListAction.load(sourceListData);
         // select first item in the list if none is selected (e.g. after loading)
@@ -26,14 +27,6 @@ export default function Dash() {
       //
     }
   }, [sourceList, sourceListData, sourceListAction]);
-
-  /* useEffect(() => {
-    console.log("page use ", selecteditem, sourceList);
-    if (!selecteditem) {
-      return;
-    }
-    setSelectedItem(selecteditem);
-  }, [sourceList, selecteditem]); */
 
   async function handleSelectionChange(selectedItem: string) {
     if (!selectedItem) {

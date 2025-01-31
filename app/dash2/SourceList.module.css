@@ -1,0 +1,32 @@
+.header {
+  font-size: 2rem;
+  color: green;
+}
+
+.list {
+  overflow: auto;
+  max-height: 70vh;
+}
+
+.item {
+  padding: 10px;
+  margin-left: 40px;
+}
+
+.selected {
+  background-color: darkgreen;
+  color: yellow;
+  border: 2px solid gold;
+}
+
+.selected:hover,
+.notSelected:hover {
+  cursor: pointer;
+  border: 2px solid deeppink;
+}
+
+.notSelected {
+  border: 2px solid transparent;
+  background-color: lightgray;
+  color: black;
+}

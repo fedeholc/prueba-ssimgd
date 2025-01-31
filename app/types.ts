@@ -25,3 +25,10 @@ type SourceListItem = {
 }
 
 type SourceListAction = { type: "add"; payload: SourceListItem } | { type: "load"; payload: SourceListItem[] } | { type: "remove", payload: string } | { type: "update"; payload: SourceListItem };
+
+type SourceListReducerActions = {
+  load: (sources: SourceListItem[]) => void;
+  add: (item: SourceListItem) => void;
+  update: (item: SourceListItem) => void;
+  remove: (id: string) => void;
+}

@@ -2,7 +2,7 @@
 
 import { createContext, Dispatch } from "react";
 import { useReducer, useEffect } from "react";
-import sourceListReducer from "./dash/sourceListReducer";
+import sourceListReducer from "./dash-spa/sourceListReducer";
 
 const MyContext = createContext<{
   sourceList: SourceId[];

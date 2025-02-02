@@ -1,4 +1,4 @@
-import SourcePages from "../../SourcePages";
+import SourcePages from "../SourcePages";
 import { ObjectId } from "mongodb";
 import { getDatabase } from "../../../lib/mongodb";
 import ItemForm from "./ItemForm";

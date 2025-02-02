@@ -12,7 +12,7 @@ export default function Dash() {
   const [selecteditem, setSelectedItem] = useState<string>("");
 
   useEffect(() => {
-      if (sourceList && sourceList.length > 0 && selecteditem === "") {
+      if (sourceList && sourceList?.length > 0 && selecteditem === "") {
         setSelectedItem(sourceList[0]._id);
       } 
   }, [sourceList, selecteditem]);

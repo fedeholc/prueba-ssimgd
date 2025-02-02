@@ -1,7 +1,9 @@
 import styles from "../page.module.css";
-import SourceList from "../SourceList";
+import SourceList from "./SourceList";
 import NewSourceButton from "./NewSourceButton";
 import { getDatabase } from "@/app/lib/mongodb";
+
+// TODO: checkiar que en dash-server no se está usando el usefetchsourcelist para quitarlo.
 
 export default async function DashLayout({
   children,

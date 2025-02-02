@@ -12,6 +12,7 @@ const MyContext = createContext<{
 
 export default MyContext;
 
+//VER el context por el momento no se está usando y en caso de querer hacerlo habría habría que cambiar el useReducer por el hook que hace el fetch de la lista de fuentes, useSourceList
 export function ContextProvider({ children }: { children: React.ReactNode }) {
   const [sourceList, sourceListDispatch] = useReducer(sourceListReducer, []);
 

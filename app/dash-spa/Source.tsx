@@ -84,7 +84,6 @@ export default function Source({
     sourceDispatch({ type: "reset-pages" });
     setLoadingImagesMessage("Cargando páginas...");
 
-    console.log("> > > handleGetData");
     try {
       const sanitizedUrl =
         source.url.startsWith("http://") || source.url.startsWith("https://")
